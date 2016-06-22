@@ -41,38 +41,42 @@ smartObj.addResource('temperature', 0, {
 
 *************************************************
 <a name="API_dump"></a>
-### dump(attrs[, callback])
+### dump(callback)
 Dump record of the Smart Object.
 
 **Arguments:**  
 
-1. none
+1. `callback` (_Function_): `function (err, result) { }`.
 
 **Returns:**  
 
-* (_Object_): A data object of Smart Object record.
+* (none)
 
 **Examples:** 
 
 ```js
-smartObj.dump();    // {
-                    //  temperature: {
-                    //      '0': {
-                    //          sensorValue: 31,
-                    //          units: 'Celsius'
-                    //      },
-                    //      '1': {
-                    //          sensorValue: 87.8,
-                    //          units: 'Fahrenheit'
-                    //      }
-                    //  },
-                    //  humidity: {
-                    //      '0': {
-                    //          sensorValue: 21,
-                    //          units: 'percent'
-                    //      }
-                    //  }
-                    // }
+smartObj.dump(function (err, result) {
+    console.log(result);
+});    
+
+// {
+//  temperature: {
+//      '0': {
+//          sensorValue: 31,
+//          units: 'Celsius'
+//      },
+//      '1': {
+//          sensorValue: 87.8,
+//          units: 'Fahrenheit'
+//      }
+//  },
+//  humidity: {
+//      '0': {
+//          sensorValue: 21,
+//          units: 'percent'
+//      }
+//  }
+// }
 ```
 
 *************************************************
@@ -109,13 +113,15 @@ Create an Object on smartObj.
 
 **Returns:**  
 
-* (_String_): Object Id.
+* (_String_): IPSO Smart Object Id.
 
 **Examples:** 
 
 ```js
 smartObj.create('temperature');     // 'temperature'
 smartObj.create(3303);              // 'temperature'
+smartObj.create('foo');             // null
+smartObj.create(9453);              // null
 ```
 
 *************************************************
@@ -127,7 +133,7 @@ Add the Resources on smartObj.
 
 1. `oid` (_String_ | _Number_): Id of the Object that owns the Resources.  
 2. `iid` (_String_ | _Number_): Id of the Object Instance that owns the Resources. It's common to use a number as `iid`, but using a string is also accepted. If without iid, Smart Object will be given an unoccupied iid.
-3. `rsc` (_Object_): An object with **rid-value pairs** to describe the Resource.  
+3. `rsc` (_Object_): An object with **rid-value pairs** to describe the Resource. Resource value can be a primitive, an data object, or an object with specific methods, i.e. read(), write(), exec().
 
 **Returns:**  
 
@@ -137,10 +143,19 @@ Add the Resources on smartObj.
 
 ```js
 // oid = 'humidity', iid = 0
-smartObj.addResource('humidity', 0, { sensorValue: 33 });  // { oid: 'humidity', iid: 0, rid: 'sensorValue' }
+smartObj.addResource('humidity', 0, { sensorValue: 33 });   // { oid: 'humidity', iid: 0, rid: 'sensorValue' }
 
 // oid = 'humidity', without iid
-smartObj.addResource('humidity', { sensorValue: 42 });     // { oid: 'humidity', iid: 1, rid: 'sensorValue' }
+smartObj.addResource('humidity', { 
+    read: function (cb) { 
+        var value = readGpio(37); 
+        cb(null, value);
+    },
+    write: function (cb, value) {
+        writeGpio(38, value);
+        cb(null, value);
+    }
+});     // { oid: 'humidity', iid: 1, rid: 'sensorValue' }
 
 smartObj.dump();    // {
                     //  humidity: {
