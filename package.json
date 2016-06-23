@@ -19,5 +19,9 @@
   "dependencies": {
     "busyman": "^0.1.1",
     "lwm2m-id": "^1.2.8"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3"
   }
 }
