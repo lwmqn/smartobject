@@ -19,6 +19,10 @@ smartobject
 <a name="Overview"></a>
 ## 1. Overview
 
+**smartobject** is an utility to help you with creating [_IPSO_](http://www.ipso-alliance.org/) _Smart Objects_ in your applications.  
+  
+  
+[Note]: The _italic_ words, such _Object_, _Object Id_, _Object Instance_, and _Object Instance Id_, are used to distinguish the _IPSO Objects_ from the JavaScript objects.  
 
 <a name="Installation"></a>
 ## 2. Installation
@@ -29,36 +33,71 @@ smartobject
 ## 3. Usage
 
 ```js
-var Smartobject = require('smartobject');
+var SmartObject = require('smartobject');
 
-var smartObj = new Smartobject();
+// step 1: New a SmartObject instance
+var so = new SmartObject();
 
-smartObj.create('temperature');
-smartObj.addResource('temperature', 0, { sensorValue: '31' });
-smartObj.addResource('temperature', 0, { units : 'Celsius' });
+// step 2: Create an IPSO Object 'temperatur' on it. 
+//         This 'temperature' Object can have many IPSO Object Instances in it, it's like a namespace.
+so.create('temperature');
+
+// step 3: Add IPSO Resources to IPSO Object Instance 0 and 1 in the 'temperature' Object.
+so.addResource('temperature', 0, { sensorValue: 31 });
+so.addResource('temperature', 0, { units : 'Celsius' });
+
+so.addResource('temperature', 1, {
+    sensorValue: {
+        read: function (cb) {
+            adc1.read(function (err, val) {
+                cb(err, val);
+            });
+        }
+    }
+});
+
+// ...
+
+// step 4: dump data of this Smart Object somewhere in your code
+so.dump(function (err, data) {
+    if (!err)
+        console.log(data);
+
+    // {
+    //     temperature: {
+    //         '0': {
+    //             sensorValue: 31,
+    //             units : 'Celsius'
+    //         },
+    //         '1': {
+    //             sensorValue: 24.6,
+    //         }
+    //     }
+    // }
+});
 ```
 
 <a name="Resources"></a>
 ## 4. Resources Planning
 
+[TBD]
 
 <a name="APIs"></a>
 ## 5. APIs
 
-* [new Smartobject()](#API_smartobject)
+* [new SmartObject()](#API_smartobject)
 * [create()](#API_create)
 * [addResource()](#API_addResource)
 * [dump()](#API_dump)
 * [has()](#API_has)
 
 *************************************************
-## Smartobject Class
+## SmartObject Class
 Exposed by `require('smartobject')`.  
 
-
 <a name="API_smartobject"></a>
-### new Smartobject()
-Create a new instance of Smartobject class.
+### new SmartObject()
+Create a new instance of SmartObject class. This document will use **so** to indicate this kind of instance. A **so** can hold many _IPSO Objects_ in it.  
 
 **Arguments:**  
 
@@ -66,69 +105,72 @@ Create a new instance of Smartobject class.
 
 **Returns:**  
 
-* (_Object_): Smartobject instance.
+* (_Object_): **so**.  
 
 **Examples:** 
 
 ```js
-var Smartobject = require('smartobject');
+var SmartObject = require('smartobject');
 
-var smartObj = new Smartobject();
+var so = new SmartObject();
 ```
 
 *************************************************
 <a name="API_create"></a>
 ### create(oid)
-Create an Object on smartObj.  
-
+Create an _IPSO Object_ in **so**. An _IPSO Object Id_ is like a namespace to manage the same kind of _IPSO Object Instances_. For exmaple, our **so** has a 'temperature' namespace(_IPSO Object Id_), and there are 6 temperature sensors(_IPSO Object Instances_) within this namespace.  
+  
+The _IPSO Object_ will be an empty object at first created, you have to use `addResource()` to put something into it.  
+  
 **Arguments:**  
 
-1. `oid` (_String_ | _Number_): Id of the Object that you want to create.
+1. `oid` (_String_ | _Number_): _IPSO Object Id_ you'd like to create with.  
 
 **Returns:**  
 
-* (_String_): IPSO Smart Object Id.
+* (_String_): Returns the _IPSO Object Id_ if succeeds, othewise returns `null` to indicate an invalid `oid` was given.  
 
 **Examples:** 
 
 ```js
-smartObj.create('temperature');     // 'temperature'
-smartObj.create(3303);              // 'temperature'
-smartObj.create('foo');             // null
-smartObj.create(9453);              // null
+so.create('temperature');     // 'temperature'
+so.create(3303);              // 'temperature'
+so.create('foo');             // null
+so.create(9453);              // null
 ```
 
 *************************************************
 <a name="API_addResource"></a>
-### addResource(oid[, iid], rsc)
-Add the Resources on smartObj.  
+### addResource(oid[, iid], resrc)
+Add a single piece of _IPSO Resource_ to an _Object Instance_ in **so**. If `iid` is not explicitly specified, the **so** will create a new _Object Instance_ as well as assgin an unused iid to it.  
 
 **Arguments:**  
 
-1. `oid` (_String_ | _Number_): Id of the Object that owns the Resources.  
-2. `iid` (_String_ | _Number_): Id of the Object Instance that owns the Resources. It's common to use a number as `iid`, but using a string is also accepted. If without iid, Smart Object will be given an unoccupied iid.
-3. `rsc` (_Object_): An object with **rid-value pairs** to describe the Resource. Resource value can be a primitive, an data object, or an object with specific methods, i.e. read(), write(), exec().
+1. `oid` (_String_ | _Number_): _IPSO Object Id_.  
+2. `iid` (_String_ | _Number_): _Object Instance Id_ to specify which _Instance_ owns the Resources. It's common to use a number as `iid`, but using a string is also accepted. The **so** will assgin an unused iid to the created _Object Instance_ if `iid` is not given.  
+3. `resrc` (_Object_): An object with a **rid-value pair** to describe the _Resource_. _Resource_ value can be a primitive, an data object, or an object with specific methods, i.e. read(), write(), exec().  
 
 **Returns:**  
 
-* (_Object_): A Smart Object instance.
+* (_Object_): An object with identifiers to tell how to point to this _Resource_.  
 
 **Examples:** 
 
 ```js
 // oid = 'humidity', iid = 0
-smartObj.addResource('humidity', 0, { sensorValue: 33 });   // { oid: 'humidity', iid: 0, rid: 'sensorValue' }
-smartObj.addResource(3304, 1, { 5700: 56 });                // { oid: 'humidity', iid: 1, rid: 'sensorValue' }
-smartObj.addResource('3304', '2', { '5700': 87 });          // { oid: 'humidity', iid: 2, rid: 'sensorValue' }
+so.addResource('humidity', 0, { sensorValue: 33 });   // { oid: 'humidity', iid: '0', rid: 'sensorValue' }
+so.addResource(3304, 1, { 5700: 56 });                // { oid: 'humidity', iid: '1', rid: 'sensorValue' }
+so.addResource('3304', '2', { '5700': 87 });          // { oid: 'humidity', iid: '2', rid: 'sensorValue' }
 ```
 
-* Resource value is read from particular operations:
+* _Resource_ value is read from particular operations:
 
 ```js
-smartObj.addResource('dIn', 0, {
+so.addResource('dIn', 0, {
     dInState: {
         read: function (cb) {
-            // you should call cb(err, value) and pass the read value through its second argument when read operation accomplishes.
+            // you should call cb(err, value) and pass the read value through its second argument 
+            // when read operation accomplishes.
             var val = gpio.read('gpio0');
             cb(null, val);
         }
@@ -137,10 +179,10 @@ smartObj.addResource('dIn', 0, {
 });
 ```
 
-* Resource value should be written through particular operations:
+* _Resource_ value should be written through particular operations:
 
 ```js
-smartObj.addResource('dOut', 0, {
+so.addResource('dOut', 0, {
     dOutState: {
         // if read method is not given, this Resource will be considered as unreadable
         write: function (val, cb) {
@@ -151,14 +193,15 @@ smartObj.addResource('dOut', 0, {
 });
 ```
 
-* Resource is an executable procedure that can be called remotely:
+* _Resource_ is an executable procedure that can be called remotely:
 
 ```js
-smartObj.addResource('led', 0, {
+so.addResource('led', 0, {
     blink: {
         exec: function (t, cb) {
             blinkLed('led0', t);    // bink led0 for t times
-            cb(null, t);            // 
+            cb(null, t);            // you can send anything back to the requester 
+                                    // through the second argument
         }
     }
 });
@@ -167,11 +210,11 @@ smartObj.addResource('led', 0, {
 *************************************************
 <a name="API_dump"></a>
 ### dump(callback)
-Dump record of the Smart Object.
+Dump data of this **so**. The dumped data will pass to the second argument of the `callback` if succeeds.  
 
 **Arguments:**  
 
-1. `callback` (_Function_): `function (err, result) { }`.
+1. `callback` (_Function_): `function (err, data) { }`.
 
 **Returns:**  
 
@@ -180,19 +223,19 @@ Dump record of the Smart Object.
 **Examples:** 
 
 ```js
-smartObj.dump(function (err, result) {
-    console.log(result);
+so.dump(function (err, data) {
+    console.log(data);
 });    
 
 // {
 //  temperature: {
 //      '0': {
 //          sensorValue: 31,
-//          units: 'Celsius'
+//          units: 'C'
 //      },
 //      '1': {
 //          sensorValue: 87.8,
-//          units: 'Fahrenheit'
+//          units: 'F'
 //      }
 //  },
 //  humidity: {
@@ -207,24 +250,23 @@ smartObj.dump(function (err, result) {
 *************************************************
 <a name="API_has"></a>
 ### has(oid[, iid[, rid]])
-To see if the target exist.
+To see if the target exists.  
 
 **Arguments:**  
 
-1. `oid` (_String_ | _Number_): The Object Id of the target.  
-2. `iid` (_String_ | _Number_): The Object Instance Id of the target.  
-3. `rid` (_String_ | _Number_): The Resource Id of the target.   
+1. `oid` (_String_ | _Number_): _Object Id_ of the target.  
+2. `iid` (_String_ | _Number_): _Object Instance Id_ of the target.  
+3. `rid` (_String_ | _Number_): _Resource Id_ of the target.   
 
 **Returns:**  
 
-* (_Boolean_): It will be `true` if target is exist, else `false`.
+* (_Boolean_): Returns `true` if target exists, otherwise `false`.  
 
 **Examples:** 
 
 ```js
-smartObj.has('humidity');                       // true
-smartObj.has('foo', 0);                         // false
-smartObj.has('temperature', 0, 'sensorValue');  // true
+so.has('humidity');                       // true
+so.has('foo', 0);                         // false
+so.has('temperature', 0, 'sensorValue');  // true
 ```
-
 *************************************************
