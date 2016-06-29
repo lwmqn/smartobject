@@ -38,7 +38,7 @@ var SmartObject = require('smartobject');
 // step 1: New a SmartObject instance
 var so = new SmartObject();
 
-// step 2: Create an IPSO Object 'temperatur' on it. 
+// step 2: Create an IPSO Object 'temperature' on it. 
 //         This 'temperature' Object can have many IPSO Object Instances in it, it's like a namespace.
 so.create('temperature');
 
@@ -118,7 +118,7 @@ var so = new SmartObject();
 *************************************************
 <a name="API_create"></a>
 ### create(oid)
-Create an _IPSO Object_ in **so**. An _IPSO Object Id_ is like a namespace to manage the same kind of _IPSO Object Instances_. For exmaple, our **so** has a 'temperature' namespace(_IPSO Object Id_), and there are 6 temperature sensors(_IPSO Object Instances_) within this namespace.  
+Create an _IPSO Object_ in **so**. An _IPSO Object Id_ is like a namespace to manage the same kind of _IPSO Object Instances_. For example, our **so** has a 'temperature' namespace(_IPSO Object Id_), and there are 6 temperature sensors(_IPSO Object Instances_) within this namespace.  
   
 The _IPSO Object_ will be an empty object at first created, you have to use `addResource()` to put something into it.  
   
@@ -128,7 +128,7 @@ The _IPSO Object_ will be an empty object at first created, you have to use `add
 
 **Returns:**  
 
-* (_String_): Returns the _IPSO Object Id_ if succeeds, othewise returns `null` to indicate an invalid `oid` was given.  
+* (_String_): Returns the _IPSO Object Id_ if succeeds, otherwise returns `null` to indicate an invalid `oid` was given.  
 
 **Examples:** 
 
@@ -142,12 +142,12 @@ so.create(9453);              // null
 *************************************************
 <a name="API_addResource"></a>
 ### addResource(oid[, iid], resrc)
-Add a single piece of _IPSO Resource_ to an _Object Instance_ in **so**. If `iid` is not explicitly specified, the **so** will create a new _Object Instance_ as well as assgin an unused iid to it.  
+Add a single piece of _IPSO Resource_ to an _Object Instance_ in **so**. If `iid` is not explicitly specified, the **so** will create a new _Object Instance_ as well as assign an unused iid to it.  
 
 **Arguments:**  
 
 1. `oid` (_String_ | _Number_): _IPSO Object Id_.  
-2. `iid` (_String_ | _Number_): _Object Instance Id_ to specify which _Instance_ owns the Resources. It's common to use a number as `iid`, but using a string is also accepted. The **so** will assgin an unused iid to the created _Object Instance_ if `iid` is not given.  
+2. `iid` (_String_ | _Number_): _Object Instance Id_ to specify which _Instance_ owns the Resources. It's common to use a number as `iid`, but using a string is also accepted. The **so** will assign an unused iid to the created _Object Instance_ if `iid` is not given.  
 3. `resrc` (_Object_): An object with a **rid-value pair** to describe the _Resource_. _Resource_ value can be a primitive, an data object, or an object with specific methods, i.e. read(), write(), exec().  
 
 **Returns:**  
@@ -199,7 +199,7 @@ so.addResource('dOut', 0, {
 so.addResource('led', 0, {
     blink: {
         exec: function (t, cb) {
-            blinkLed('led0', t);    // bink led0 for t times
+            blinkLed('led0', t);    // blink led0 for t times
             cb(null, t);            // you can send anything back to the requester 
                                     // through the second argument
         }

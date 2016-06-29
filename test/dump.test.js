@@ -124,7 +124,7 @@ describe('dumpSync Check', function () {
                     sensorValue: 30
                 },
                 '1': {
-                    sensorValue: 'Function'
+                    sensorValue: '_callback_'
                 }
             },
             'foo': {

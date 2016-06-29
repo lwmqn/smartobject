@@ -45,9 +45,8 @@ describe('addResource Check', function () {
         expect(function () { return smartObj.addResource(3303, '1', function () {}); }).to.throw(TypeError);
     });
 
-    it('should throw TypeError if input val is a number, null or undefined', function () {
+    it('should throw TypeError if input val is a number or undefined', function () {
         expect(function () { return smartObj.addResource(3303, '1', { 'a': function () {} }); }).to.throw(TypeError);
-        expect(function () { return smartObj.addResource(3303, '1', { 'a': null }); }).to.throw(TypeError);
         expect(function () { return smartObj.addResource(3303, '1', { 'a': undefined }); }).to.throw(TypeError);
     });
 
