@@ -22,6 +22,7 @@ describe('has Check', function () {
     });
 
     it('should throw TypeError if input iid is not a number and not a string', function () {
+        smartObj.createIpsoOnly(3303);
         expect(function () { return smartObj.has(3303, NaN, 'a'); }).to.throw(TypeError);
         expect(function () { return smartObj.has(3303, [], 'a'); }).to.throw(TypeError);
         expect(function () { return smartObj.has(3303, {}, 'a'); }).to.throw(TypeError);
@@ -31,6 +32,7 @@ describe('has Check', function () {
     });
 
     it('should throw TypeError if input rid is not a number and not a string', function () {
+        smartObj.addResources(3303, 1, { 5700: 30 });
         expect(function () { return smartObj.has(3303, '1', NaN); }).to.throw(TypeError);
         expect(function () { return smartObj.has(3303, '1', []); }).to.throw(TypeError);
         expect(function () { return smartObj.has(3303, '1', {}); }).to.throw(TypeError);
@@ -40,19 +42,16 @@ describe('has Check', function () {
     });
 
     it('should return true if target is exist', function () {
-        smartObj.create(3303);
-        smartObj.createAny('foo');
+        smartObj.create('foo');
 
-        smartObj.addResource(3303, 0, { 5700: 30 });
-        smartObj.addResource(3303, 1, { 5700: { read: function (cb) { cb(null, 87); } }});
-        smartObj.addResource('foo', 0, { 'a': '10' });
+        smartObj.addResources(3303, 1, { 5700: { read: function (cb) { cb(null, 87); } }});
+        smartObj.addResources('foo', 0, { 'a': '10' });
 
-
-        expect(smartObj.has(3303, 0, 5700)).to.be.true;
-        expect(smartObj.has('3303', '0', '5700')).to.be.true;
-        expect(smartObj.has('temperature', '0', 'sensorValue')).to.be.true;
 
         expect(smartObj.has(3303, 1, 5700)).to.be.true;
+        expect(smartObj.has('3303', '1', '5700')).to.be.true;
+        expect(smartObj.has('temperature', '1', 'sensorValue')).to.be.true;
+
         expect(smartObj.has('foo', 0, 'a')).to.be.true;
     });
 
