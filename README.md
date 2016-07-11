@@ -19,10 +19,11 @@ smartobject
 <a name="Overview"></a>
 ## 1. Overview
 
-**smartobject** is an utility to help you with creating [_IPSO_](http://www.ipso-alliance.org/) _Smart Objects_ in your applications.  
+**smartobject** is a _Smart Object_ Class that helps you with creating [_IPSO_](http://www.ipso-alliance.org/) _Smart Objects_ in your JS applications.  
   
+[Note]: The _italics_, such _Object_, _Object Id_, _Object Instance_, and _Object Instance Id_, are used to distinguish the _IPSO Objects_ from the JavaScript objects.  
   
-[Note]: The _italic_ words, such _Object_, _Object Id_, _Object Instance_, and _Object Instance Id_, are used to distinguish the _IPSO Objects_ from the JavaScript objects.  
+[TODO]
 
 <a name="Installation"></a>
 ## 2. Installation
@@ -32,19 +33,21 @@ smartobject
 <a name="Usage"></a>
 ## 3. Usage
 
+Here is a quick example to show you how to create your _Smart Object_ with only 2 steps:
+
 ```js
 var SmartObject = require('smartobject');
 
 // step 1: New a SmartObject instance
-var so = new SmartObject();
+var smart = new SmartObject();
 
-// step 2: Create an IPSO Object 'temperature' on it. 
-//         This 'temperature' Object can have many IPSO Object Instances in it, it's like a namespace.
-so.create('temperature');
+// step 2: Initialize a 'temperature' Object Instance in your smart object "smart".  
+           Here, 'temperature' is the IPSO Object, which is like a Class.
+smart.init('temperature', 0, {
+    sensorValue: 31,
+    units : 'Celsius'
+});
 
-// step 3: Add IPSO Resources to IPSO Object Instance 0 and 1 in the 'temperature' Object.
-so.addResource('temperature', 0, { sensorValue: 31 });
-so.addResource('temperature', 0, { units : 'Celsius' });
 
 so.addResource('temperature', 1, {
     sensorValue: {
@@ -86,10 +89,17 @@ so.dump(function (err, data) {
 ## 5. APIs
 
 * [new SmartObject()](#API_smartobject)
-* [create()](#API_create)
-* [addResource()](#API_addResource)
-* [dump()](#API_dump)
+* [init()](#API_init)
+* [objectList()](#API_objectList)
 * [has()](#API_has)
+* [get()](#API_get)
+* [set()](#API_set)
+* [read()](#API_read)
+* [write()](#API_read)
+* [exec()](#API_exec)
+* [dump()](#API_dump)
+* [dumpSync()](#API_dumpSync)
+
 
 *************************************************
 ## SmartObject Class
@@ -97,7 +107,7 @@ Exposed by `require('smartobject')`.
 
 <a name="API_smartobject"></a>
 ### new SmartObject()
-Create a new instance of SmartObject class. This document will use **so** to indicate this kind of instance. A **so** can hold many _IPSO Objects_ in it.  
+Create a new instance of SmartObject class. This document will use `so` to indicate this kind of instance. A `so` can hold many _IPSO Objects_ in it.  
 
 **Arguments:**  
 
@@ -105,7 +115,7 @@ Create a new instance of SmartObject class. This document will use **so** to ind
 
 **Returns:**  
 
-* (_Object_): **so**.  
+* (_Object_): **so**  
 
 **Examples:** 
 
@@ -116,95 +126,246 @@ var so = new SmartObject();
 ```
 
 *************************************************
-<a name="API_create"></a>
-### create(oid)
-Create an _IPSO Object_ in **so**. An _IPSO Object Id_ is like a namespace to manage the same kind of _IPSO Object Instances_. For example, our **so** has a 'temperature' namespace(_IPSO Object Id_), and there are 6 temperature sensors(_IPSO Object Instances_) within this namespace.  
+<a name="API_init"></a>
+### init(oid, iid, resrcs[, opt])
+Initialize an _Object Instance_ in `so`. `oid` is the [_IPSO Object Id_](https://github.com/simenkid/lwm2m-id#Identifiers) to indicate what kind of your gagdet is, for example, `'temperature'`. `iid` is the _Object Instance Id_ to tell a _Instance_ from the others. `resrcs` is an object that wraps all the _Resources_ up.  
   
-The _IPSO Object_ will be an empty object at first created, you have to use `addResource()` to put something into it.  
+* Simply speaking, `oid` is like a namespace to manage all the same kind of _IPSO Object Instances_. For example, our `so` has a `'temperature'` namespace, and there are 3 temperature sensors(_Object Instances_) within this namespace.  
+* You can initialize an _Object Instance_ with an empty `resrcs = {}`, and then use `set()` method to add _Resources_ one by one to the _Instance_. In my experience, initialize an _Object Instance_ with all _Resources_ at once is more elegant, for example, you can manage all your _Resources_ in a separated module, and export the whole thing to your main app to do the initialization).  
+* Be careful, invoking `init()` upon an existing _Instance_ will firstly remove all the _Resources_ it has and then put the new _Resources_ into it. Thus, it is better to initialize your _Instance_ only once throughout your code.  
+* [Resources Planning Tutorial](#TODO) will show you the how-tos about initializing your _Resources_ and exporting your hardware to _IPSO Resources_.
   
 **Arguments:**  
 
-1. `oid` (_String_ | _Number_): _IPSO Object Id_ you'd like to create with.  
+1. `oid` (_String_ | _Number_): _IPSO Object Id_. `oid` indicates what kind of your gagdet is, for example, `'temperature'` aparently tells it's a temperature sensor. `oid` also accepts a numberic id defined by IPSO, for example, you can give it a number of `3303`, and `so` will internally turn it into its string version, say `'temperature'`, as a key.  
+2. `iid` (_String_ | _Number_): _Object Instance Id_, which tells different _Instances_. For example, if you have 3 temperature sensors on your machine, then you can assign an unique `iid` to each of them to distingish one from the others. It would be nice to use numbers, i.e., `0`, `1`, `2`, `3`, as the `iid` to strictly meet the IPSO definition. But strings are also accepted, e.g., `'sen01'`, `'sen02'`, `'sen03'`, it is just like a handle to help you distinguish different _Instances_ within the same _Object_ class.  
+3. `resrcs` (_Object_): _IPSO Resources_, which is an object with **rid-value pairs** to describe the _Resources_. Each key in `resrcs` is a _Resource Id_, which can be a string or a number. And each value can be a primitive, an data object, or an object with specific methods, i.e. read(), write(), exec(). [Resources Planning Tutorial](#TODO) will give you some hints.  
+4. `opt` (_Object_): An option object, default is `{ ipsoOnly: false }` if not given. If it is given with `{ ipsoOnly: true }`, then `oid` must be an IPSO-defined _Object Id_, `iid` must be a number, and _Resource Ids_ within `resrcs` must all be IPSO-defined _Resource Ids_, or init() will throw Errors.  
 
 **Returns:**  
 
-* (_String_): Returns the _IPSO Object Id_ if succeeds, otherwise returns `null` to indicate an invalid `oid` was given.  
+* (_Object_): The initialized _Object Instance_.  
 
 **Examples:** 
 
 ```js
-so.create('temperature');     // 'temperature'
-so.create(3303);              // 'temperature'
-so.create('foo');             // null
-so.create(9453);              // null
+var so = new SmartObject();
+
+so.init('temperature', 0, {
+    sensorValue: 31,
+    units : 'Celsius'
+});
+
+so.init('temperature', 1, {
+    sensorValue: 75,
+    units : 'Fahrenheit'
+});
+
+so.init('temperature', 18, {
+    sensorValue: 301,
+    units : 'Kelvin'
+});
+
+// Dump the whole Smart Object
+so.dump(function (err, data) {
+    if (!err)
+        console.log(data);
+    // {
+    //     temperature: {
+    //         '0': {
+    //             sensorValue: 31,
+    //             units : 'Celsius'
+    //         },
+    //         '1': {
+    //             sensorValue: 75,
+    //             units : 'Fahrenheit'
+    //         },
+    //         '18': {
+    //             sensorValue: 301,
+    //             units : 'Kelvin'
+    //         }
+    //     }
+    // }
+});
+
+// Dump the 'temperature' Object
+so.dump('temperature', function (err, data) {
+    if (!err)
+        console.log(data);
+    // {
+    //     '0': {
+    //         sensorValue: 31,
+    //         units : 'Celsius'
+    //     },
+    //     '1': {
+    //         sensorValue: 75,
+    //         units : 'Fahrenheit'
+    //     },
+    //     '18': {
+    //         sensorValue: 301,
+    //         units : 'Kelvin'
+    //     }
+    // }
+});
+
+// Dump the 'temperature' sensor (Object Instance) with iid = 18
+so.dump('temperature', 18, function (err, data) {
+    if (!err)
+        console.log(data);
+    // {
+    //     sensorValue: 301,
+    //     units : 'Kelvin'
+    // }
+});
 ```
 
 *************************************************
-<a name="API_addResource"></a>
-### addResource(oid[, iid], resrc)
-Add a single piece of _IPSO Resource_ to an _Object Instance_ in **so**. If `iid` is not explicitly specified, the **so** will create a new _Object Instance_ as well as assign an unused iid to it.  
-
+<a name="API_objectList"></a>
+### objectList()
+Returns the list of _Objects_ and _Object Instances_ with their identifiers. If an _Id_ is an IPSO-defined one, it will be turned into a numeric one. When you're using LWM2M interface, you may need this method to generate the _Object List_ for registering.  
+  
 **Arguments:**  
 
-1. `oid` (_String_ | _Number_): _IPSO Object Id_.  
-2. `iid` (_String_ | _Number_): _Object Instance Id_ to specify which _Instance_ owns the Resources. It's common to use a number as `iid`, but using a string is also accepted. The **so** will assign an unused iid to the created _Object Instance_ if `iid` is not given.  
-3. `resrc` (_Object_): An object with a **rid-value pair** to describe the _Resource_. _Resource_ value can be a primitive, an data object, or an object with specific methods, i.e. read(), write(), exec().  
+1. _none_  
 
 **Returns:**  
 
-* (_Object_): An object with identifiers to tell how to point to this _Resource_.  
+* (_Object_): Returns an array that contains all the identifers, each elemet is in the form of `{ oid: 3301, iid: [ 0, 1, 2, 3 ] }`.  
 
 **Examples:** 
 
 ```js
-// oid = 'humidity', iid = 0
-so.addResource('humidity', 0, { sensorValue: 33 });   // { oid: 'humidity', iid: '0', rid: 'sensorValue' }
-so.addResource(3304, 1, { 5700: 56 });                // { oid: 'humidity', iid: '1', rid: 'sensorValue' }
-so.addResource('3304', '2', { '5700': 87 });          // { oid: 'humidity', iid: '2', rid: 'sensorValue' }
+var so = new SmartObject();
+
+so.init('temperature', 0, {
+    sensorValue: 31,
+    units : 'Celsius'
+});
+
+so.init('temperature', 18, {
+    sensorValue: 301,
+    units : 'Kelvin'
+});
+
+so.init('illuminance', 0, {
+    sensorValue: 128.6
+});
+
+so.initResrc('presence', 6, {
+    dInState: 0
+});
+
+so.initResrc('myGadget', 'gad72', {
+    myResource: 'hello_world'
+});
+
+so.objectList();
+// [
+//     { oid: 3303, iid: [ 0, 18 ] },
+//     { oid: 3301, iid: [ 0 ] },
+//     { oid: 3302, iid: [ 6 ] },
+//     { oid: 'myGadget', iid: [ 'gad72' ] }    // not IPSO-defined
+// ]
 ```
 
-* _Resource_ value is read from particular operations:
+*************************************************
+<a name="API_has"></a>
+### has(oid[, iid[, rid]])
+To see if `so` has the specified _Object_, _Object Instance_, or _Resource_.  
+
+**Arguments:**  
+
+1. `oid` (_String_ | _Number_): _Object Id_ of the target.  
+2. `iid` (_String_ | _Number_): _Object Instance Id_ of the target.  
+3. `rid` (_String_ | _Number_): _Resource Id_ of the target.   
+
+**Returns:**  
+
+* (_Boolean_): Returns `true` if target exists, otherwise `false`.  
+
+**Examples:** 
 
 ```js
-so.addResource('dIn', 0, {
-    dInState: {
-        read: function (cb) {
-            // you should call cb(err, value) and pass the read value through its second argument 
-            // when read operation accomplishes.
-            var val = gpio.read('gpio0');
-            cb(null, val);
-        }
-        // if write method is not given, this Resource will be considered as unwritable
-    }
-});
+// Checks if so has the 'humidity' Object
+so.has('humidity');                       // true
+
+// Checks if so has the 'foo' Object Instance with iid = 0
+so.has('foo', 0);                         // false
+
+// Checks if so has the 'sensorValue' Resource in temperature sensor 8
+so.has('temperature', 8, 'sensorValue');  // true
 ```
 
-* _Resource_ value should be written through particular operations:
+*************************************************
+<a name="API_get"></a>
+### get(oid, iid, rid)
+Synchronously get the specified Resource.  
+
+* At client-side (machine), the `get()` method is usually used to get the raw _Resource_ which may be an object with read/write/exec callbacks. If you like to read the exact **value** of a _Resource_, you should use the `read()` method. Since reading something from somewhere may require some special and asynchronous operations, such as reading data from a wire, and reading from a database.  
+* At server-side (data center), the _Resource values_ are simple data pieces requested from machines. Thus, use `get()` to get the _stored value of a Resource on the server_ is no problem.  
+
+**Arguments:**  
+
+1. `oid` (_String_ | _Number_): _Object Id_ of the target.  
+2. `iid` (_String_ | _Number_): _Object Instance Id_ of the target.  
+3. `rid` (_String_ | _Number_): _Resource Id_ of the target.   
+
+**Returns:**  
+
+* (_Depends_): Returns the _Resource_ value, or `undefined` if _Resource_ does not exist.  
+
+**Examples:** 
 
 ```js
-so.addResource('dOut', 0, {
-    dOutState: {
-        // if read method is not given, this Resource will be considered as unreadable
-        write: function (val, cb) {
-            gpio.write('gpio0', val);
-            cb(null, val);
-        }
-    }
+so.get('temperature', 2, 'sensorValue');  // 26.4
+
+// If the Resource is an object with read/write/exec method(s)
+so.get('temperature', 1, 'sensorValue');
+// {
+//     read: function (cb) {
+//              ...
+//     }
+// }
+
+// If you do like read the exact value from the temperature sensor,
+// please use read()
+so.read('temperature', 1, 'sensorValue', function (err, data) {
+    if (!err)
+        console.log(data);  // 18.4
 });
+
 ```
 
-* _Resource_ is an executable procedure that can be called remotely:
+*************************************************
+<a name="API_set"></a>
+### set(oid, iid, rid, value)
+Synchronously set a value to the specified Resource.  
+
+* At client-side (machine), the `set()` method is usually used to **initialize** a _Resource_, but not write a value to a _Resource_. If you like to write a value to the _Resource_, you should use the `write()` method. Since writing something to somewhere may require some special and asynchronous operations, such as writing data to a wire, and writing data to a database.  
+* At server-side (data center), use `set()` to _store the value of a Resource on the server_ is no problem. For example, when your request of reading a _Resoucre_ from a remote machine is responded back, you can use `set()` to store that _Resource value_ on the server.  
+
+**Arguments:**  
+
+1. `oid` (_String_ | _Number_): _Object Id_ of the target.  
+2. `iid` (_String_ | _Number_): _Object Instance Id_ of the target.  
+3. `rid` (_String_ | _Number_): _Resource Id_ of the target.   
+4. `value` (_Primitives_ | _Object_): _Resource_ data or an object with read/write/exec method(s). This method will throw if `value` is given with a function.  
+
+**Returns:**  
+
+* (_Boolean_): Returns `true` if set successfully, else returns `false` if the _Object Instance_ does not exist (Resource cannot be set).  
+
+**Examples:** 
 
 ```js
-so.addResource('led', 0, {
-    blink: {
-        exec: function (t, cb) {
-            blinkLed('led0', t);    // blink led0 for t times
-            cb(null, t);            // you can send anything back to the requester 
-                                    // through the second argument
-        }
-    }
-});
+so.set('dIn', 0, 'dInState', 1);    // true
+so.set('dOut', 1, 'dOutState', 0);  // true
+
+so.set('dOut', 2, 'dOutState', function (cb) {
+    gpioA3.read(function (state) {  // assume gpioA3 is a handle to your hardware
+        cb(null, state);
+    });
+});  // true
 ```
 
 *************************************************
@@ -248,25 +409,4 @@ so.dump(function (err, data) {
 ```
 
 *************************************************
-<a name="API_has"></a>
-### has(oid[, iid[, rid]])
-To see if the target exists.  
 
-**Arguments:**  
-
-1. `oid` (_String_ | _Number_): _Object Id_ of the target.  
-2. `iid` (_String_ | _Number_): _Object Instance Id_ of the target.  
-3. `rid` (_String_ | _Number_): _Resource Id_ of the target.   
-
-**Returns:**  
-
-* (_Boolean_): Returns `true` if target exists, otherwise `false`.  
-
-**Examples:** 
-
-```js
-so.has('humidity');                       // true
-so.has('foo', 0);                         // false
-so.has('temperature', 0, 'sensorValue');  // true
-```
-*************************************************
