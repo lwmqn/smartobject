@@ -101,7 +101,7 @@ var so = new SmartObject();
 *************************************************
 <a name="API_init"></a>
 ### init(oid, iid, resrcs[, opt])
-Initialize an _Object Instance_ in `so`. `oid` is the [_IPSO Object Id_](https://github.com/simenkid/lwm2m-id#Identifiers) to indicate what kind of your gagdet is, for example, `'temperature'`. `iid` is the _Object Instance Id_ to tell a _Instance_ from the others. `resrcs` is an object that wraps all the _Resources_ up.  
+Initialize an _Object Instance_ in `so`. `oid` is the [_IPSO Object Id_](https://github.com/simenkid/lwm2m-id#Identifiers) to indicate what kind of your gadget is, for example, `'temperature'`. `iid` is the _Object Instance Id_ to tell a _Instance_ from the others. `resrcs` is an object that wraps all the _Resources_ up.  
   
 * Simply speaking, `oid` is like a namespace to manage all the same kind of _IPSO Object Instances_. For example, our `so` has a `'temperature'` namespace, and there are 3 temperature sensors(_Object Instances_) within this namespace.  
 * You can initialize an _Object Instance_ with an empty `resrcs = {}`, and then use `set()` method to add _Resources_ one by one to the _Instance_. In my experience, initialize an _Object Instance_ with all _Resources_ at once is more elegant, for example, you can manage all your _Resources_ in a separated module, and export the whole thing to your main app to do the initialization).  
@@ -110,8 +110,8 @@ Initialize an _Object Instance_ in `so`. `oid` is the [_IPSO Object Id_](https:/
   
 **Arguments:**  
 
-1. `oid` (_String_ | _Number_): _IPSO Object Id_. `oid` indicates what kind of your gagdet is, for example, `'temperature'` aparently tells it's a temperature sensor. `oid` also accepts a numberic id defined by IPSO, for example, you can give it a number of `3303`, and `so` will internally turn it into its string version, say `'temperature'`, as a key.  
-2. `iid` (_String_ | _Number_): _Object Instance Id_, which tells different _Instances_. For example, if you have 3 temperature sensors on your machine, then you can assign an unique `iid` to each of them to distingish one from the others. It would be nice to use numbers, i.e., `0`, `1`, `2`, `3`, as the `iid` to strictly meet the IPSO definition. But strings are also accepted, e.g., `'sen01'`, `'sen02'`, `'sen03'`, it is just like a handle to help you distinguish different _Instances_ within the same _Object_ class.  
+1. `oid` (_String_ | _Number_): _IPSO Object Id_. `oid` indicates what kind of your gadget is, for example, `'temperature'` apparently tells it's a temperature sensor. `oid` also accepts a numeric id defined by IPSO, for example, you can give it a number of `3303`, and `so` will internally turn it into its string version, say `'temperature'`, as a key.  
+2. `iid` (_String_ | _Number_): _Object Instance Id_, which tells different _Instances_. For example, if you have 3 temperature sensors on your machine, then you can assign an unique `iid` to each of them to distinguish one from the others. It would be nice to use numbers, i.e., `0`, `1`, `2`, `3`, as the `iid` to strictly meet the IPSO definition. But strings are also accepted, e.g., `'sen01'`, `'sen02'`, `'sen03'`, it is just like a handle to help you distinguish different _Instances_ within the same _Object_ class.  
 3. `resrcs` (_Object_): _IPSO Resources_, which is an object with **rid-value pairs** to describe the _Resources_. Each key in `resrcs` is a _Resource Id_, which can be a string or a number. And each value can be a primitive, an data object, or an object with specific methods, i.e. read(), write(), exec(). [Resources Planning Tutorial](#TODO) will give you some hints.  
 4. `opt` (_Object_): An option object, default is `{ ipsoOnly: false }` if not given. If it is given with `{ ipsoOnly: true }`, then `oid` must be an IPSO-defined _Object Id_, `iid` must be a number, and _Resource Ids_ within `resrcs` must all be IPSO-defined _Resource Ids_, or init() will throw Errors.  
 
@@ -203,7 +203,7 @@ Returns the list of _Objects_ and _Object Instances_ with their identifiers. If 
 
 **Returns:**  
 
-* (_Array_): Returns an array that contains all the identifers, each elemet is in the form of `{ oid: 3301, iid: [ 0, 1, 2, 3 ] }`.  
+* (_Array_): Returns an array that contains all the identifiers, each element is in the form of `{ oid: 3301, iid: [ 0, 1, 2, 3 ] }`.  
 
 **Examples:** 
 
@@ -315,7 +315,7 @@ so.read('temperature', 1, 'sensorValue', function (err, data) {
 Synchronously set a value to the specified _Resource_.  
 
 * At client-side (machine), the `set()` method is usually used to **initialize** a _Resource_, but not write a value to a _Resource_. If you like to write a value to the _Resource_, you should use the `write()` method. Since writing something to somewhere may require some special and asynchronous operations, such as writing data to a wire, and writing data to a database.  
-* At server-side (data center), use `set()` to _store the value of a Resource on the server_ is no problem. For example, when your request of reading a _Resoucre_ from a remote machine is responded back, you can use `set()` to store that _Resource value_ on the server.  
+* At server-side (data center), use `set()` to _store the value of a Resource on the server_ is no problem. For example, when your request of reading a _Resource_ from a remote machine is responded back, you can use `set()` to store that _Resource value_ on the server.  
 
 **Arguments:**  
 
@@ -415,7 +415,7 @@ Asynchronously write a value to the specified _Resource_.
 3. `rid` (_String_ | _Number_): _Resource Id_ of the target.   
 4. `value` (_Depends_): The value to write to the specified _Resource_.  
 5. `callback` (_Function_): `function (err, data) { ... }`. Called when writing is done or any error occurs, where `data` is the _Resource_ value written. (When an error occurs, `so` will pass you a string like `'_notfound_'` with `data`, you can use it as a hint to choose a status code to respond back to the requester.)  
-5. `opt` (_Object_): An option used to read _Resources_ in restrict mode.  
+5. `opt` (_Object_): An option used to write _Resources_ in restrict mode.  
 
 * This table show you what results may the callback receive:   
 
@@ -424,7 +424,7 @@ Asynchronously write a value to the specified _Resource_.
 | Error object   | `'_notfound_'`   | _Resource_ not found.                                              |  
 | Error object   | `'_unwritable_'` | _Resource_ is unwritable.                                          |  
 | Error object   | `'_exec_'`       | _Resource_ is unwritable (Becasue it is an executable _Resource_). |  
-| `null`         | Depends          | _Resource_ is successfully read.                                   |  
+| `null`         | Depends          | _Resource_ is successfully write.                                  |  
 
 
 **Returns:**  
@@ -463,7 +463,7 @@ so.write('barometer', 6, 'resetMinMaxMeaValues', function (err, data) {
 
 *************************************************
 <a name="API_dump"></a>
-### dump([oid[, iid],] callback)
+### dump([oid[, iid],] callback[, opt])
 Asynchronously dump data from `so`. This dumping method uses the asynchronous `read()` under the hood.  
 
 * Given with `oid`, `iid`, and a `callback` to dump data of an _Object Instance_.  
@@ -475,6 +475,7 @@ Asynchronously dump data from `so`. This dumping method uses the asynchronous `r
 1. `oid` (_String_ | _Number_): _Object Id_ of the target.  
 2. `iid` (_String_ | _Number_): _Object Instance Id_ of the target.  
 3. `callback` (_Function_): `function (err, data) { }`.  
+4. `opt` (_Object_): An option used to dump _Resources_ in restrict mode.  
 
 **Returns:**  
 
