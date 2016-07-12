@@ -19,11 +19,12 @@ smartobject
 <a name="Overview"></a>
 ## 1. Overview
 
+[TODO] Overview  
+
 **smartobject** is a _Smart Object_ Class that helps you with creating [_IPSO_](http://www.ipso-alliance.org/) _Smart Objects_ in your JS applications.  
   
 [Note]: The _italics_, such _Object_, _Object Id_, _Object Instance_, and _Object Instance Id_, are used to distinguish the _IPSO Objects_ from the JavaScript objects.  
   
-[TODO]
 
 <a name="Installation"></a>
 ## 2. Installation
@@ -32,6 +33,8 @@ smartobject
 
 <a name="Usage"></a>
 ## 3. Usage
+
+[TODO] Usage  
 
 Here is a quick example to show you how to create your _Smart Object_ with only 2 steps:
 
@@ -48,42 +51,12 @@ smart.init('temperature', 0, {
     units : 'Celsius'
 });
 
-
-so.addResource('temperature', 1, {
-    sensorValue: {
-        read: function (cb) {
-            adc1.read(function (err, val) {
-                cb(err, val);
-            });
-        }
-    }
-});
-
-// ...
-
-// step 4: dump data of this Smart Object somewhere in your code
-so.dump(function (err, data) {
-    if (!err)
-        console.log(data);
-
-    // {
-    //     temperature: {
-    //         '0': {
-    //             sensorValue: 31,
-    //             units : 'Celsius'
-    //         },
-    //         '1': {
-    //             sensorValue: 24.6,
-    //         }
-    //     }
-    // }
-});
 ```
 
 <a name="Resources"></a>
 ## 4. Resources Planning
 
-[TBD]
+[TODO] Resources Planning: a separated document  
 
 <a name="APIs"></a>
 ## 5. APIs
@@ -95,7 +68,7 @@ so.dump(function (err, data) {
 * [get()](#API_get)
 * [set()](#API_set)
 * [read()](#API_read)
-* [write()](#API_read)
+* [write()](#API_write)
 * [exec()](#API_exec)
 * [dump()](#API_dump)
 * [dumpSync()](#API_dumpSync)
@@ -230,7 +203,7 @@ Returns the list of _Objects_ and _Object Instances_ with their identifiers. If 
 
 **Returns:**  
 
-* (_Object_): Returns an array that contains all the identifers, each elemet is in the form of `{ oid: 3301, iid: [ 0, 1, 2, 3 ] }`.  
+* (_Array_): Returns an array that contains all the identifers, each elemet is in the form of `{ oid: 3301, iid: [ 0, 1, 2, 3 ] }`.  
 
 **Examples:** 
 
@@ -299,9 +272,9 @@ so.has('temperature', 8, 'sensorValue');  // true
 *************************************************
 <a name="API_get"></a>
 ### get(oid, iid, rid)
-Synchronously get the specified Resource.  
+Synchronously get the specified _Resource_.  
 
-* At client-side (machine), the `get()` method is usually used to get the raw _Resource_ which may be an object with read/write/exec callbacks. If you like to read the exact **value** of a _Resource_, you should use the `read()` method. Since reading something from somewhere may require some special and asynchronous operations, such as reading data from a wire, and reading from a database.  
+* At client-side (machine), the `get()` method is usually used to get the raw _Resource_ which may be an object with read/write/exec callbacks. If you like to read the **exact value** of a _Resource_, you should use the `read()` method. Since reading something from somewhere may require some special and asynchronous operations, such as reading data from a wire, and reading from a database.  
 * At server-side (data center), the _Resource values_ are simple data pieces requested from machines. Thus, use `get()` to get the _stored value of a Resource on the server_ is no problem.  
 
 **Arguments:**  
@@ -339,7 +312,7 @@ so.read('temperature', 1, 'sensorValue', function (err, data) {
 *************************************************
 <a name="API_set"></a>
 ### set(oid, iid, rid, value)
-Synchronously set a value to the specified Resource.  
+Synchronously set a value to the specified _Resource_.  
 
 * At client-side (machine), the `set()` method is usually used to **initialize** a _Resource_, but not write a value to a _Resource_. If you like to write a value to the _Resource_, you should use the `write()` method. Since writing something to somewhere may require some special and asynchronous operations, such as writing data to a wire, and writing data to a database.  
 * At server-side (data center), use `set()` to _store the value of a Resource on the server_ is no problem. For example, when your request of reading a _Resoucre_ from a remote machine is responded back, you can use `set()` to store that _Resource value_ on the server.  
@@ -353,7 +326,7 @@ Synchronously set a value to the specified Resource.
 
 **Returns:**  
 
-* (_Boolean_): Returns `true` if set successfully, else returns `false` if the _Object Instance_ does not exist (Resource cannot be set).  
+* (_Boolean_): Returns `true` if set successfully, else returns `false` if the _Object Instance_ does not exist (_Resource_ cannot be set).  
 
 **Examples:** 
 
@@ -369,13 +342,139 @@ so.set('dOut', 2, 'dOutState', function (cb) {
 ```
 
 *************************************************
-<a name="API_dump"></a>
-### dump(callback)
-Dump data of this **so**. The dumped data will pass to the second argument of the `callback` if succeeds.  
+<a name="API_read"></a>
+### read(oid, iid, rid, callback[, opt])
+Asynchronously read the specified _Resource_ value.  
 
 **Arguments:**  
 
-1. `callback` (_Function_): `function (err, data) { }`.
+1. `oid` (_String_ | _Number_): _Object Id_ of the target.  
+2. `iid` (_String_ | _Number_): _Object Instance Id_ of the target.  
+3. `rid` (_String_ | _Number_): _Resource Id_ of the target.   
+4. `callback` (_Function_): `function (err, data) { ... }`. Called when reading is done or any error occurs, where `data` is the _Resource_ value. (When an error occurs, `so` will pass you a string like `'_notfound_'` with `data`, you can use it as a hint to choose a status code to respond back to the requester.)  
+5. `opt` (_Object_): An option used to read _Resources_ in restrict mode, default is `{ restrict: false }`. If it is given with `{ restrict: true }`, this method will follow the access control specification defined by IPSO. This option may be set to `true` to respond to a remote _read request_ (access from outside world should be under control).  
+
+* This table show you what results may the callback receive:   
+
+|       err      |      data        |       Description                                                  |  
+|----------------|------------------|--------------------------------------------------------------------|  
+| Error object   | `'_notfound_'`   | _Resource_ not found.                                              |  
+| Error object   | `'_unreadable_'` | _Resource_ is unreadable.                                          |  
+| Error object   | `'_exec_'`       | _Resource_ is unreadable (Becasue it is an executable _Resource_). |  
+| `null`         | Depends          | _Resource_ is successfully read.                                   |  
+
+
+**Returns:**  
+
+* (_none_)  
+
+**Examples:** 
+
+```js
+so.read('temperature', 1, 'sensorValue', function (err, data) {
+    if (!err)
+        console.log(data);  // 18.4
+});
+
+so.read('actuation', 0, 'dimmer', function (err, data) {
+    if (!err)
+        console.log(data);  // 62
+});
+
+so.read('illuminance', 1, 'maxMeaValue', function (err, data) {
+    if (err) {
+        console.log(err);   //  Error: 'Resource is unreadable.'
+        console.log(data);  // '_unreadable_'
+    }
+});
+
+so.read('accelerometer', 2, 'minRangeValue', function (err, data) {
+    if (err) {
+        console.log(err);   //  Error: 'Resource not found.'
+        console.log(data);  // '_notfound_'
+    }
+});
+
+so.read('barometer', 6, 'resetMinMaxMeaValues', function (err, data) {
+    if (err) {
+        console.log(err);   //  Error: 'Resource is unreadable.'
+        console.log(data);  // '_exec_'
+    }
+});
+```
+
+*************************************************
+<a name="API_write"></a>
+### write(oid, iid, rid, value, callback[, opt])
+Asynchronously write a value to the specified _Resource_.  
+
+**Arguments:**  
+
+1. `oid` (_String_ | _Number_): _Object Id_ of the target.  
+2. `iid` (_String_ | _Number_): _Object Instance Id_ of the target.  
+3. `rid` (_String_ | _Number_): _Resource Id_ of the target.   
+4. `value` (_Depends_): The value to write to the specified _Resource_.  
+5. `callback` (_Function_): `function (err, data) { ... }`. Called when writing is done or any error occurs, where `data` is the _Resource_ value written. (When an error occurs, `so` will pass you a string like `'_notfound_'` with `data`, you can use it as a hint to choose a status code to respond back to the requester.)  
+5. `opt` (_Object_): An option used to read _Resources_ in restrict mode.  
+
+* This table show you what results may the callback receive:   
+
+|       err      |      data        |       Description                                                  |  
+|----------------|------------------|--------------------------------------------------------------------|  
+| Error object   | `'_notfound_'`   | _Resource_ not found.                                              |  
+| Error object   | `'_unwritable_'` | _Resource_ is unwritable.                                          |  
+| Error object   | `'_exec_'`       | _Resource_ is unwritable (Becasue it is an executable _Resource_). |  
+| `null`         | Depends          | _Resource_ is successfully read.                                   |  
+
+
+**Returns:**  
+
+* (_none_)  
+
+**Examples:** 
+
+```js
+so.write('actuation', 0, 'onOff', 1, function (err, data) {
+    if (!err)
+        console.log(data);  // 1
+});
+
+so.write('temperature', 1, 'sensorValue', 26, function (err, data) {
+    if (err) {
+        console.log(err);   // Error: 'Resource is unwritable.'
+        console.log(data);  // _unwritable_
+    }
+});
+
+so.write('presence', 3, 'busyToClearDelay', function (err, data) {
+    if (err) {
+        console.log(err);   //  Error: 'Resource not found.'
+        console.log(data);  // '_notfound_'
+    }
+});
+
+so.write('barometer', 6, 'resetMinMaxMeaValues', function (err, data) {
+    if (err) {
+        console.log(err);   //  Error: 'Resource is unwritable.'
+        console.log(data);  // '_exec_'
+    }
+});
+```
+
+*************************************************
+<a name="API_dump"></a>
+### dump([oid[, iid],] callback)
+Asynchronously dump data from `so`. This dumping method uses the asynchronous `read()` under the hood.  
+
+* Given with `oid`, `iid`, and a `callback` to dump data of an _Object Instance_.  
+* Given with `oid` and a `callback` to dump data of an _Object_.  
+* Given with only a `callback` to dump data of whole _Smart Object_.  
+
+**Arguments:**  
+
+1. `oid` (_String_ | _Number_): _Object Id_ of the target.  
+2. `iid` (_String_ | _Number_): _Object Instance Id_ of the target.  
+3. `callback` (_Function_): `function (err, data) { }`.  
 
 **Returns:**  
 
@@ -384,29 +483,124 @@ Dump data of this **so**. The dumped data will pass to the second argument of th
 **Examples:** 
 
 ```js
-so.dump(function (err, data) {
-    console.log(data);
-});    
+// Dump Object Instance: 'temperature' sensor with iid = 18
+so.dump('temperature', 18, function (err, data) {
+    if (!err)
+        console.log(data);
+    // {
+    //     sensorValue: 301,
+    //     units : 'Kelvin'
+    // }
+});
 
-// {
-//  temperature: {
-//      '0': {
-//          sensorValue: 31,
-//          units: 'C'
-//      },
-//      '1': {
-//          sensorValue: 87.8,
-//          units: 'F'
-//      }
-//  },
-//  humidity: {
-//      '0': {
-//          sensorValue: 21,
-//          units: 'percent'
-//      }
-//  }
-// }
+// Dump Object: all 'temperature' sensors
+so.dump('temperature', function (err, data) {
+    if (!err)
+        console.log(data);
+    // {
+    //     '0': {
+    //         sensorValue: 31,
+    //         units : 'Celsius'
+    //     },
+    //     '1': {
+    //         sensorValue: 75,
+    //         units : 'Fahrenheit'
+    //     },
+    //     '18': {
+    //         sensorValue: 301,
+    //         units : 'Kelvin'
+    //     }
+    // }
+});
+
+// Dump whole Smart Object
+so.dump(function (err, data) {
+    if (!err)
+        console.log(data);
+    // {
+    //     temperature: {
+    //         '0': {
+    //             sensorValue: 31,
+    //             units : 'Celsius'
+    //         },
+    //         '1': {
+    //             sensorValue: 75,
+    //             units : 'Fahrenheit'
+    //         },
+    //         '18': {
+    //             sensorValue: 301,
+    //             units : 'Kelvin'
+    //         }
+    //     }
+    // }
+});
 ```
 
 *************************************************
+<a name="API_dumpSync"></a>
+### dumpSync([oid[, iid]])
+Synchronously dump data from `so`. This dumping method uses the synchronous `get()` under the hood. This method should only be used at server-side (since at server-side, all stored _Objects_ are simply data pieces).  
 
+* Given with both `oid` and `iid` to dump data of an _Object Instance_.  
+* Given with only `oid` to dump data of an _Object_.  
+* Given with no ids to dump data of whole _Smart Object_.  
+
+**Arguments:**  
+
+1. `oid` (_String_ | _Number_): _Object Id_ of the target.  
+2. `iid` (_String_ | _Number_): _Object Instance Id_ of the target.  
+
+**Returns:**  
+
+* (_Object_): The dumped data, can be from an _Object Instance_, an _Object_, or whole _Smart Object_.  
+
+**Examples:** 
+
+```js
+// These examples are assuming that we are at server-side.
+var myDevice = myController.find('0x12AE3B4D77886644'); // find the device
+var so = myDevice.getSmartObject();                     // get the smart object on the device
+
+// Dump Object Instance: 'temperature' sensor with iid = 18
+so.dumpSync('temperature', 18);
+// {
+//     sensorValue: 301,
+//     units : 'Kelvin'
+// }
+
+// Dump Object: all 'temperature' sensors
+so.dumpSync('temperature');
+// {
+//     '0': {
+//         sensorValue: 31,
+//         units : 'Celsius'
+//     },
+//     '1': {
+//         sensorValue: 75,
+//         units : 'Fahrenheit'
+//     },
+//     '18': {
+//         sensorValue: 301,
+//         units : 'Kelvin'
+//     }
+// }
+
+// Dump whole Smart Object
+so.dumpSync();
+// {
+//     temperature: {
+//         '0': {
+//             sensorValue: 31,
+//             units : 'Celsius'
+//         },
+//         '1': {
+//             sensorValue: 75,
+//             units : 'Fahrenheit'
+//         },
+//         '18': {
+//             sensorValue: 301,
+//             units : 'Kelvin'
+//         }
+//     }
+// }
+```
