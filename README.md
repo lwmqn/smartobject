@@ -86,7 +86,7 @@ Imagine that you have to read the temperature value from which sensor with one-w
 
 The great benefit of using **smartobject** in your application is that you almost need not to tackle the allocation of Resources by yourself. It provides a scheme to help you with management of reading/writing your hardware or executing a procedure on the machine. All you have to do is to plan and define your _Resources_ well, and then use **smartobject** methods to access them.  
 
-Please refer to [Resources Planning with **smartobject**](#) for more detials.  
+Please refer to [Resources Planning Tutorial](https://github.com/PeterEB/smartobject/blob/master/docs/resource_plan.md) for more detials.  
 
 <a name="APIs"></a>
 ## 5. APIs
