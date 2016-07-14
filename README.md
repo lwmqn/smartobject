@@ -21,7 +21,7 @@ smartobject
 
 **smartobject** is a _Smart Object_ Class that helps you create [_IPSO_](http://www.ipso-alliance.org/) _Smart Objects_ in your JavaScript applications. If you'd like use IPSO data model in your projects or products, you can use **smartobject** as the base class to abstract your hardware, sensor modules, or gadgets into plugins (node.js packages) for users convenience.  
   
-IPSO defines a hierarchical data model to decribe real-world gadgets, such as temperature sensors and light switches. IPSO uses _**Object**_ to tell what kind of a gadget is, and uses _**Object Instance**_ to tell which one a gadget is. An _Object_ is like a class, and _Object Instance_ is the entity of an _Object_. Each _Object Instance_ has an unique _**Object Instance Id**_ to identify itself from other gadgets with the same class. The _**Resources**_ are used to describe what attributes may a gadget have, for example, a temperature sensor may have attributes such as _sensorValue_, _unit_, _minMeaValue_, .etc.  
+IPSO defines a hierarchical data model to describe real-world gadgets, such as temperature sensors and light switches. IPSO uses _**Object**_ to tell what kind of a gadget is, and uses _**Object Instance**_ to tell which one a gadget is. An _Object_ is like a class, and _Object Instance_ is the entity of an _Object_. Each _Object Instance_ has an unique _**Object Instance Id**_ to identify itself from other gadgets with the same class. The _**Resources**_ are used to describe what attributes may a gadget have, for example, a temperature sensor may have attributes such as _sensorValue_, _unit_, _minMeaValue_, .etc.  
   
 [Note]: The _italics_, such _Object_, _Object Id_, _Object Instance_, and _Object Instance Id_, are used to distinguish the _IPSO Objects_ from the JavaScript objects.  
   
@@ -86,7 +86,7 @@ Imagine that you have to read the temperature value from which sensor with one-w
 
 The great benefit of using **smartobject** in your application is that you almost need not to tackle the allocation of Resources by yourself. It provides a scheme to help you with management of reading/writing your hardware or executing a procedure on the machine. All you have to do is to plan and define your _Resources_ well, and then use **smartobject** methods to access them.  
 
-Please refer to [Resources Planning Tutorial](https://github.com/PeterEB/smartobject/blob/master/docs/resource_plan.md) for more detials.  
+Please refer to [Resources Planning Tutorial](https://github.com/PeterEB/smartobject/blob/master/docs/resource_plan.md) for more details.  
 
 <a name="APIs"></a>
 ## 5. APIs
@@ -390,7 +390,7 @@ Asynchronously read the specified _Resource_ value.
 |----------------|------------------|--------------------------------------------------------------------|  
 | Error object   | `'_notfound_'`   | _Resource_ not found.                                              |  
 | Error object   | `'_unreadable_'` | _Resource_ is unreadable.                                          |  
-| Error object   | `'_exec_'`       | _Resource_ is unreadable (Becasue it is an executable _Resource_). |  
+| Error object   | `'_exec_'`       | _Resource_ is unreadable (Because it is an executable _Resource_). |  
 | `null`         | Depends          | _Resource_ is successfully read.                                   |  
 
 
@@ -502,7 +502,7 @@ Execute the specified _Resource_. The executable _Resource_ is a procedure you'v
 2. `iid` (_String_ | _Number_): _Object Instance Id_ of the target.  
 3. `rid` (_String_ | _Number_): _Resource Id_ of the target.   
 4. `args` (_Array_): The parameters required by the procedure.  
-5. `callback` (_Function_): `function (err, data) { ... }`. Will be called when execution is performed or any error occurs, where `data` is anything your procedure like to return back. For example, when a blinking led prcedure starts, you may like return an object `{ status: 'ok', led: 6, times: 10, speed: 5 }` to the callback to tell something about this execution.  
+5. `callback` (_Function_): `function (err, data) { ... }`. Will be called when execution is performed or any error occurs, where `data` is anything your procedure like to return back. For example, when a blinking led procedure starts, you may like return an object `{ status: 'ok', led: 6, times: 10, speed: 5 }` to the callback to tell something about this execution.  
   
 * This table show you what results may the callback receive:   
 
