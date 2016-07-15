@@ -4,6 +4,7 @@ var util = require('util'),
     ObjectInstance = require('../lib/object_instance'); 
 
 var objectInst = new ObjectInstance('temperature', 0),
+    objectInst2 = new ObjectInstance('temperature', 0),
     objectInstPwr = new ObjectInstance('pwrMea', 0);
 
 describe('Object Instance - Functional Check', function () {
@@ -154,6 +155,17 @@ describe('Object Instance - Functional Check', function () {
                     done();
                 }
             }, { restrict: true });
+        });
+
+        it('should return error', function (done) {
+            objectInst2.sensorValue = function () {};
+            objectInst2.units = function () {};
+
+            objectInst2.dump(function (err, result) {
+                if (err) {
+                    done();
+                }
+            });
         });
     });
 

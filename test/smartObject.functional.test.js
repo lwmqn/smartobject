@@ -277,6 +277,34 @@ describe('Smart Object - Functional Check', function () {
                     done();
             }, { restrict: true });
         });
+
+        it('should return error', function (done) {
+            smartObj.init(3200, 0, {});
+            smartObj.init(3200, 1, {});
+            smartObj.dIn[0].dInState = function() {};
+            smartObj.dIn[0].counter = function() {};
+            smartObj.dIn[1].dInState = function() {};
+            smartObj.dIn[1].counter = function() {};
+
+            smartObj.dump(3200, function (err, result) {
+                if (err) 
+                    done();
+            });
+        });
+
+        it('should return error', function (done) {
+            smartObj.init(3201, 0, {});
+            smartObj.init(3201, 1, {});
+            smartObj.dOut[0].dOutState = function() {};
+            smartObj.dOut[0].dOutpolarity = function() {};
+            smartObj.dOut[1].dOutState = function() {};
+            smartObj.dOut[1].dOutpolarity = function() {};
+
+            smartObj.dump(function (err, result) {
+                if (err) 
+                    done();
+            });
+        });
     });
 
     describe('#.read()', function () {
