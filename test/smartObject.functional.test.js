@@ -494,4 +494,66 @@ describe('Smart Object - Functional Check', function () {
             });
         });
     });
+
+    describe('#.isReadable()', function () {
+        it('should return true if target is readable', function () {
+            expect(smartObj.isReadable(3303, 0, 5700)).to.be.true;
+            expect(smartObj.isReadable(3303, 0, 5701)).to.be.true;
+            expect(smartObj.isReadable(3303, 0, 5703)).to.be.true;
+            expect(smartObj.isReadable('3303', '0', '5700')).to.be.true;
+            expect(smartObj.isReadable('temperature', 0, 'sensorValue')).to.be.true;
+
+            expect(smartObj.isReadable(3305, 0, 5800)).to.be.true;
+            expect(smartObj.isReadable(3305, 0, 5801)).to.be.true;
+            expect(smartObj.isReadable(3305, 0, 5821)).to.be.true;
+        });
+
+        it('should return false if target is unreadable', function () {
+            expect(smartObj.isReadable(3303, 0, 5702)).to.be.false;
+            expect(smartObj.isReadable(3303, 0, 5704)).to.be.false;
+
+            expect(smartObj.isReadable(3305, 0, 5806)).to.be.false;
+            expect(smartObj.isReadable(3305, 0, 5822)).to.be.false;
+        });
+    });
+
+    describe('#.isWritable()', function () {
+        it('should return true if target is readable', function () {
+            expect(smartObj.isWritable(3303, 0, 5702)).to.be.true;
+            expect(smartObj.isWritable(3303, 0, 5703)).to.be.true;
+
+            expect(smartObj.isWritable(3305, 0, 5806)).to.be.true;
+            expect(smartObj.isWritable(3305, 0, 5821)).to.be.true;
+        });
+
+        it('should return false if target is unreadable', function () {
+            expect(smartObj.isWritable(3303, 0, 5700)).to.be.false;
+            expect(smartObj.isWritable(3303, 0, 5701)).to.be.false;
+            expect(smartObj.isWritable(3303, 0, 5704)).to.be.false;
+
+            expect(smartObj.isWritable(3305, 0, 5800)).to.be.false;
+            expect(smartObj.isWritable(3305, 0, 5801)).to.be.false;
+            expect(smartObj.isWritable(3305, 0, 5822)).to.be.false;
+        });
+    });
+
+    describe('#.isExecutable()', function () {
+        it('should return true if target is readable', function () {
+            expect(smartObj.isExecutable(3303, 0, 5704)).to.be.true;
+
+            expect(smartObj.isExecutable(3305, 0, 5822)).to.be.true;
+        });
+
+        it('should return false if target is unreadable', function () {
+            expect(smartObj.isExecutable(3303, 0, 5700)).to.be.false;
+            expect(smartObj.isExecutable(3303, 0, 5701)).to.be.false;
+            expect(smartObj.isExecutable(3303, 0, 5702)).to.be.false;
+            expect(smartObj.isExecutable(3303, 0, 5703)).to.be.false;
+
+            expect(smartObj.isExecutable(3305, 0, 5800)).to.be.false;
+            expect(smartObj.isExecutable(3305, 0, 5801)).to.be.false;
+            expect(smartObj.isExecutable(3305, 0, 5806)).to.be.false;
+            expect(smartObj.isExecutable(3305, 0, 5821)).to.be.false;
+        });
+    });
 });

@@ -223,6 +223,136 @@ describe('Smart Object - Signature Check', function () {
         });
     });
 
+    describe('#.isReadable()', function () {
+        it('should be a function', function () {
+            expect(smartObj.isReadable).to.be.a('function');
+        });
+
+        it('should throw TypeError if input oid is not a number and not a string', function () {
+            expect(function () { return smartObj.isReadable(); }).to.throw(TypeError);
+            expect(function () { return smartObj.isReadable(undefined, '1', 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isReadable(null, '1', 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isReadable(NaN, '1', 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isReadable([], '1', 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isReadable({}, '1', 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isReadable(true, '1', 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isReadable(new Date(), '1', 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isReadable(function () {}, '1', 'a'); }).to.throw(TypeError);
+        });
+
+        it('should throw TypeError if input iid is not a number and not a string', function () {
+            expect(function () { return smartObj.isReadable(3303); }).to.throw(TypeError);
+            expect(function () { return smartObj.isReadable(3303, undefined, 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isReadable(3303, null, 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isReadable(3303, NaN, 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isReadable(3303, [], 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isReadable(3303, {}, 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isReadable(3303, true, 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isReadable(3303, new Date(), 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isReadable(3303, function () {}, 'a'); }).to.throw(TypeError);
+
+        });
+
+        it('should throw TypeError if input rid is not a number and not a string', function () {
+            smartObj.init(3303, 1, {});
+            expect(function () { return smartObj.isReadable(3303, 1); }).to.throw(TypeError);
+            expect(function () { return smartObj.isReadable(3303, 1, undefined); }).to.throw(TypeError);
+            expect(function () { return smartObj.isReadable(3303, 1, null); }).to.throw(TypeError);
+            expect(function () { return smartObj.isReadable(3303, 1, NaN); }).to.throw(TypeError);
+            expect(function () { return smartObj.isReadable(3303, 1, []); }).to.throw(TypeError);
+            expect(function () { return smartObj.isReadable(3303, 1, {}); }).to.throw(TypeError);
+            expect(function () { return smartObj.isReadable(3303, 1, true); }).to.throw(TypeError);
+            expect(function () { return smartObj.isReadable(3303, 1, new Date()); }).to.throw(TypeError);
+            expect(function () { return smartObj.isReadable(3303, 1, function () {}); }).to.throw(TypeError);
+        });
+    });
+
+    describe('#.isWritable()', function () {
+        it('should be a function', function () {
+            expect(smartObj.isWritable).to.be.a('function');
+        });
+
+        it('should throw TypeError if input oid is not a number and not a string', function () {
+            expect(function () { return smartObj.isWritable(); }).to.throw(TypeError);
+            expect(function () { return smartObj.isWritable(undefined, '1', 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isWritable(null, '1', 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isWritable(NaN, '1', 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isWritable([], '1', 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isWritable({}, '1', 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isWritable(true, '1', 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isWritable(new Date(), '1', 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isWritable(function () {}, '1', 'a'); }).to.throw(TypeError);
+        });
+
+        it('should throw TypeError if input iid is not a number and not a string', function () {
+            expect(function () { return smartObj.isWritable(3303); }).to.throw(TypeError);
+            expect(function () { return smartObj.isWritable(3303, undefined, 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isWritable(3303, null, 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isWritable(3303, NaN, 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isWritable(3303, [], 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isWritable(3303, {}, 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isWritable(3303, true, 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isWritable(3303, new Date(), 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isWritable(3303, function () {}, 'a'); }).to.throw(TypeError);
+
+        });
+
+        it('should throw TypeError if input rid is not a number and not a string', function () {
+            expect(function () { return smartObj.isWritable(3303, 1); }).to.throw(TypeError);
+            expect(function () { return smartObj.isWritable(3303, 1, undefined); }).to.throw(TypeError);
+            expect(function () { return smartObj.isWritable(3303, 1, null); }).to.throw(TypeError);
+            expect(function () { return smartObj.isWritable(3303, 1, NaN); }).to.throw(TypeError);
+            expect(function () { return smartObj.isWritable(3303, 1, []); }).to.throw(TypeError);
+            expect(function () { return smartObj.isWritable(3303, 1, {}); }).to.throw(TypeError);
+            expect(function () { return smartObj.isWritable(3303, 1, true); }).to.throw(TypeError);
+            expect(function () { return smartObj.isWritable(3303, 1, new Date()); }).to.throw(TypeError);
+            expect(function () { return smartObj.isWritable(3303, 1, function () {}); }).to.throw(TypeError);
+        });
+    });
+    
+    describe('#.isExecutable()', function () {
+        it('should be a function', function () {
+            expect(smartObj.isExecutable).to.be.a('function');
+        });
+
+        it('should throw TypeError if input oid is not a number and not a string', function () {
+            expect(function () { return smartObj.isExecutable(); }).to.throw(TypeError);
+            expect(function () { return smartObj.isExecutable(undefined, '1', 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isExecutable(null, '1', 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isExecutable(NaN, '1', 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isExecutable([], '1', 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isExecutable({}, '1', 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isExecutable(true, '1', 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isExecutable(new Date(), '1', 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isExecutable(function () {}, '1', 'a'); }).to.throw(TypeError);
+        });
+
+        it('should throw TypeError if input iid is not a number and not a string', function () {
+            expect(function () { return smartObj.isExecutable(3303); }).to.throw(TypeError);
+            expect(function () { return smartObj.isExecutable(3303, undefined, 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isExecutable(3303, null, 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isExecutable(3303, NaN, 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isExecutable(3303, [], 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isExecutable(3303, {}, 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isExecutable(3303, true, 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isExecutable(3303, new Date(), 'a'); }).to.throw(TypeError);
+            expect(function () { return smartObj.isExecutable(3303, function () {}, 'a'); }).to.throw(TypeError);
+
+        });
+
+        it('should throw TypeError if input rid is not a number and not a string', function () {
+            expect(function () { return smartObj.isExecutable(3303, 1); }).to.throw(TypeError);
+            expect(function () { return smartObj.isExecutable(3303, 1, undefined); }).to.throw(TypeError);
+            expect(function () { return smartObj.isExecutable(3303, 1, null); }).to.throw(TypeError);
+            expect(function () { return smartObj.isExecutable(3303, 1, NaN); }).to.throw(TypeError);
+            expect(function () { return smartObj.isExecutable(3303, 1, []); }).to.throw(TypeError);
+            expect(function () { return smartObj.isExecutable(3303, 1, {}); }).to.throw(TypeError);
+            expect(function () { return smartObj.isExecutable(3303, 1, true); }).to.throw(TypeError);
+            expect(function () { return smartObj.isExecutable(3303, 1, new Date()); }).to.throw(TypeError);
+            expect(function () { return smartObj.isExecutable(3303, 1, function () {}); }).to.throw(TypeError);
+        });
+    });
+
     describe('#.get()', function () {
         it('should be a function', function () {
             expect(smartObj.get).to.be.a('function');
@@ -254,7 +384,6 @@ describe('Smart Object - Signature Check', function () {
         });
 
         it('should throw TypeError if input rid is not a number and not a string', function () {
-            smartObj.init(3303, 1, {});
             expect(function () { return smartObj.get(3303, 1); }).to.throw(TypeError);
             expect(function () { return smartObj.get(3303, 1, undefined); }).to.throw(TypeError);
             expect(function () { return smartObj.get(3303, 1, null); }).to.throw(TypeError);
