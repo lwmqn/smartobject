@@ -87,6 +87,8 @@ Imagine that you have to read the temperature value from which sensor with one-w
 The great benefit of using **smartobject** in your application is that you almost need not to tackle the allocation of Resources by yourself. It provides a scheme to help you with management of reading/writing your hardware or executing a procedure on the machine. All you have to do is to plan and define your _Resources_ well, and then use **smartobject** methods to access them.  
 
 Please refer to [Resources Planning Tutorial](https://github.com/PeterEB/smartobject/blob/master/docs/resource_plan.md) for more details.  
+  
+Here are the [code templates](https://github.com/PeterEB/smartobject/blob/master/docs/templates.md) of many IPSO-defined devices, such as temperature sensor, humidity sensor, and light control. Each template gives the code snippet of how to initialize an _Object Instance_ with its oid and iid, and lists every _Resource_ the _Object Instance_ may have.
 
 <a name="APIs"></a>
 ## 5. APIs
@@ -102,7 +104,9 @@ Please refer to [Resources Planning Tutorial](https://github.com/PeterEB/smartob
 * [exec()](#API_exec)
 * [dump()](#API_dump)
 * [dumpSync()](#API_dumpSync)
-
+* [isReadable()](#API_isReadable)
+* [isWritable()](#API_isWritable)
+* [isExecutable()](#API_isExecutable)
 
 *************************************************
 ## SmartObject Class
@@ -697,4 +701,67 @@ so.dumpSync();
 //         }
 //     }
 // }
+```
+
+*************************************************
+<a name="API_isReadable"></a>
+### isReadable(oid, iid, rid)
+To see if a _Resource_ is readable.  
+
+**Arguments:**  
+
+1. `oid` (_String_ | _Number_): _Object Id_ of the target.  
+2. `iid` (_String_ | _Number_): _Object Instance Id_ of the target.  
+3. `rid` (_String_ | _Number_): _Resource Id_ of the target.   
+
+**Returns:**  
+
+* (_Boolean_): Returns `true` if the _Resource_ is readable, otherwise `false`.  
+
+**Examples:** 
+
+```js
+so.isReadable('temperature', 8, 'sensorValue');     // true
+```
+
+*************************************************
+<a name="API_isWritable"></a>
+### isWritable(oid, iid, rid)
+To see if a _Resource_ is writable.  
+
+**Arguments:**  
+
+1. `oid` (_String_ | _Number_): _Object Id_ of the target.  
+2. `iid` (_String_ | _Number_): _Object Instance Id_ of the target.  
+3. `rid` (_String_ | _Number_): _Resource Id_ of the target.   
+
+**Returns:**  
+
+* (_Boolean_): Returns `true` if the _Resource_ is writable, otherwise `false`.  
+
+**Examples:** 
+
+```js
+so.isWritable('temperature', 8, 'sensorValue');     // false
+```
+
+*************************************************
+<a name="API_isExecutable"></a>
+### isExecutable(oid, iid, rid)
+To see if a _Resource_ is executable.  
+
+**Arguments:**  
+
+1. `oid` (_String_ | _Number_): _Object Id_ of the target.  
+2. `iid` (_String_ | _Number_): _Object Instance Id_ of the target.  
+3. `rid` (_String_ | _Number_): _Resource Id_ of the target.   
+
+**Returns:**  
+
+* (_Boolean_): Returns `true` if the _Resource_ is executable, otherwise `false`.  
+
+**Examples:** 
+
+```js
+so.isExecutable('temperature', 8, 'sensorValue');   // false
 ```
