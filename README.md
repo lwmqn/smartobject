@@ -1,9 +1,9 @@
-smartobject
-========================
+# smartobject
+A Smart Object Class that helps you with creating IPSO Smart Objects in your JavaScript applications
 
 [![NPM](https://nodei.co/npm/smartobject.png?downloads=true)](https://nodei.co/npm/smartobject/)  
 
-[![Build Status](https://travis-ci.org/PeterEB/smartobject.svg?branch=develop)](https://travis-ci.org/PeterEB/smartobject)
+[![Travis branch](https://img.shields.io/travis/PeterEB/smartobject/master.svg?maxAge=2592000)](https://travis-ci.org/PeterEB/smartobject)
 [![npm](https://img.shields.io/npm/v/smartobject.svg?maxAge=2592000)](https://www.npmjs.com/package/smartobject)
 [![npm](https://img.shields.io/npm/l/smartobject.svg?maxAge=2592000)](https://www.npmjs.com/package/smartobject)
 
@@ -19,7 +19,7 @@ smartobject
 <a name="Overview"></a>
 ## 1. Overview
 
-**smartobject** is a _Smart Object_ Class that helps you create [_IPSO_](http://www.ipso-alliance.org/) _Smart Objects_ in your JavaScript applications. If you'd like use IPSO data model in your projects or products, you can use **smartobject** as the base class to abstract your hardware, sensor modules, or gadgets into plugins (node.js packages) for users convenience.  
+**smartobject** is a _Smart Object_ Class that helps you with creating [_IPSO_](http://www.ipso-alliance.org/) _Smart Objects_ in your JavaScript applications. If you like to use the IPSO data model in your projects or products, you can use **smartobject** as the base class to abstract your hardware, sensor modules, or gadgets into plugins (node.js packages) for users convenience.  
   
 IPSO defines a hierarchical data model to describe real-world gadgets, such as temperature sensors and light switches. IPSO uses _**Object**_ to tell what kind of a gadget is, and uses _**Object Instance**_ to tell which one a gadget is. An _Object_ is like a class, and _Object Instance_ is the entity of an _Object_. Each _Object Instance_ has an unique _**Object Instance Id**_ to identify itself from other gadgets with the same class. The _**Resources**_ are used to describe what attributes may a gadget have, for example, a temperature sensor may have attributes such as _sensorValue_, _unit_, _minMeaValue_, .etc.  
   
