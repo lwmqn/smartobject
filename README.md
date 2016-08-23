@@ -1,9 +1,9 @@
-smartobject
-========================
+# smartobject
+A Smart Object Class that helps you with creating IPSO Smart Objects in your JavaScript applications
 
 [![NPM](https://nodei.co/npm/smartobject.png?downloads=true)](https://nodei.co/npm/smartobject/)  
 
-[![Build Status](https://travis-ci.org/PeterEB/smartobject.svg?branch=develop)](https://travis-ci.org/PeterEB/smartobject)
+[![Travis branch](https://img.shields.io/travis/PeterEB/smartobject/master.svg?maxAge=2592000)](https://travis-ci.org/PeterEB/smartobject)
 [![npm](https://img.shields.io/npm/v/smartobject.svg?maxAge=2592000)](https://www.npmjs.com/package/smartobject)
 [![npm](https://img.shields.io/npm/l/smartobject.svg?maxAge=2592000)](https://www.npmjs.com/package/smartobject)
 
