@@ -477,7 +477,7 @@ so.init('gyrometer', 0, {
 ```
 
 ********************************************
-<a name="tmpl_clor"></a>
+<a name="tmpl_colour"></a>
 ### 3335 Colour
   
 ```js
