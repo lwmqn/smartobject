@@ -21,9 +21,14 @@ A Smart Object Class that helps you with creating IPSO Smart Objects in your Jav
 
 **smartobject** is a _Smart Object_ Class that helps you with creating [_IPSO_](http://www.ipso-alliance.org/) _Smart Objects_ in your JavaScript applications. If you like to use the IPSO data model in your projects or products, you can use **smartobject** as the base class to abstract your hardware, sensor modules, or gadgets into plugins (node.js packages) for users convenience.  
   
-IPSO defines a hierarchical data model to describe real-world gadgets, such as temperature sensors and light switches. IPSO uses _**Object**_ to tell what kind of a gadget is, and uses _**Object Instance**_ to tell which one a gadget is. An _Object_ is like a class, and _Object Instance_ is the entity of an _Object_. Each _Object Instance_ has an unique _**Object Instance Id**_ to identify itself from other gadgets with the same class. The _**Resources**_ are used to describe what attributes may a gadget have, for example, a temperature sensor may have attributes such as _sensorValue_, _unit_, _minMeaValue_, .etc.  
-  
-[Note]: The _italics_, such _Object_, _Object Id_, _Object Instance_, and _Object Instance Id_, are used to distinguish the _IPSO Objects_ from the JavaScript objects.  
+IPSO defines a hierarchical data model to describe real-world gadgets, such as temperature sensors and light switches.  
+* IPSO uses _**Object**_ to tell what kind of a gadget is, and uses _**Object Instance**_ to tell which one a gadget is.  
+* An _**Object**_ is like a class, and an _**Object Instance**_ is the entity of an _Object_.  
+* Each _**Object Instance**_ has an unique _**Object Instance Id**_ to identify itself from other gadgets of the same class.  
+* The _**Resources**_ are used to describe what attributes may a gadget have, for example, a temperature sensor may have attributes such as _sensorValue_, _unit_, _minMeaValue_, .etc.  
+* [lwm2m-id](https://github.com/simenkid/lwm2m-id#Identifiers) has listed the IPSO-defined _Object_ and _Resource_ identifiers.  
+
+[Note]: The _italics_, such _Object_, _Object Id_, _Object Instance_, and _Object Instance Id_, are used to distinguish the _**IPSO Objects**_ from the JavaScript **objects**.  
   
 
 <a name="Installation"></a>
@@ -36,55 +41,66 @@ IPSO defines a hierarchical data model to describe real-world gadgets, such as t
 
 Here is a quick example to show you how to create your _Smart Object_ with only few steps:
 
-```js
-// Step 1: Import the SmartObject Class
-var SmartObject = require('smartobject');
+* **Step 1**: Import the SmartObject Class and create an instance of it 
+    ```js
+    var SmartObject = require('smartobject');
+    var so = new SmartObject(); // so can hold many Object Instances in it
+    ```
 
-// Step 2: New a SmartObject instance to have all your IPSO Objects in it
-var so = new SmartObject();
+* **Step 2**: Initialize a temperature sensor in your smart object `so`
+    ```js
+    so.init(
+        'temperature',          // 'temperature' is the IPSO-defined Object Identifier (oid, 3303).
+        0,                      // 0 is the Object Instance Id (iid) assgined by you.
+        {                       // { sensorValue, units } contains all Resources (attributes) this sensor has. 
+            sensorValue: 31,    // The key 'sensorValue' is the IPSO-defined Resource Id (rid, 5700) 
+            units : 'Celsius'   // The key 'units' is the IPSO-defined Resource Id (rid, 5701) 
+        }
+    );
+    ```
+* **Step 3**: Initialize more _Object Instances_. Finally, we have 3 temperature sensors, 1 magnetometer, and 4 digital inputs in our `so`
+    ```js
+    // Init more temperature sensors (each with an unique iid)
+    so.init('temperature', 1, {
+        sensorValue: 28,
+        units : 'Celsius'
+    });
 
-// Step 3: Initialize a 'temperature' Object Instance in your smart object 'so'.  
-//         - 'temperature' is the IPSO Object Identifier (oid).
-//         - 0 is the Object Instance Id (iid).
-//         - { sensorValue, units } contains all Resources (attributes) this sensor has.  
-//         - sensorValue and units are the Resource Id (rid)
+    so.init('temperature', 2, {
+        sensorValue: 72.6,
+        units : 'Fahrenheit'
+    });
 
-so.init('temperature', 0, {
-    sensorValue: 31,
-    units : 'Celsius'
-});
+    // Init other gadgets
+    so.init('magnetometer', 0, {
+        xValue: 18,
+        yValue: 21,
+        zValue: 231
+    });
 
-
-// Init more temperature sensors (each with an unique iid)
-so.init('temperature', 1, {
-    sensorValue: 28,
-    units : 'Celsius'
-});
-
-so.init('temperature', 2, {
-    sensorValue: 72.6,
-    units : 'Fahrenheit'
-});
-
-// Init other gadgets
-so.init('magnetometer', 0, {
-    xValue: 18,
-    yValue: 21,
-    zValue: 231
-});
-
-so.init('dIn', 0, { dInState: 1 });
-so.init('dIn', 1, { dInState: 0 });
-so.init('dIn', 6, { dInState: 0 });
-so.init('dIn', 7, { dInState: 1 });
-```
+    so.init('dIn', 0, { dInState: 1 });
+    so.init('dIn', 1, { dInState: 0 });
+    so.init('dIn', 6, { dInState: 0 });
+    so.init('dIn', 7, {
+        dInState: {
+            read: function (cb) {
+                hal.digitalPin0.read(function (err, val) {
+                    cb(null, val);
+                });
+            }
+        }
+    });
+    ```
 
 <a name="Resources"></a>
 ## 4. Resources Planning
 
-Imagine that you have to read the temperature value from which sensor with one-wire interface, and you'd like to export this sensor to an IPSO smart object, but how to? And how do you update the temperature value to your smart object, polling it regularly? How do you do with the access control? Which _Resource_ is readable? Which is writable? And which is remotely executable?  
+Imagine that you have to read the temperature value from a sensor with one-wire interface:
+* How to export this sensor to an IPSO smart object?
+* How do you update the temperature value in your smart object?
+* How do you do with the access control? Your _Resource_ is readable? writable? or remotely executable?  
 
-The great benefit of using **smartobject** in your application is that you almost need not to tackle the allocation of Resources by yourself. It provides a scheme to help you with management of reading/writing your hardware or executing a procedure on the machine. All you have to do is to plan and define your _Resources_ well, and then use **smartobject** methods to access them.  
+The great benefit of using **smartobject** in your application is that you almost need not to tackle the allocation of _Resources_ by yourself. It provides a scheme to help you with management of reading/writing your hardware or executing a procedure on the machine. All you have to do is to plan and define your _Resources_ well, and then use **smartobject** methods to do your jobs. You can use **smartobject** in any of your project to abstract  
 
 Please refer to [Resources Planning Tutorial](https://github.com/PeterEB/smartobject/blob/master/docs/resource_plan.md) for more details.  
   
