@@ -7,11 +7,15 @@ This document will show you how to organize your _Resources_ and how to abstract
 * `resrcs` is an object to wrap your _IPSO Resources_ up. Each key in `resrcs` object is the `rid` and the value is the corresponding _Resource value_  
 * `opt` is an [option](https://github.com/PeterEB/smartobject#API_init) to restrict the identifiers  
   
-The simplest case for a _Resource Value_ is being a primitive, like a number, a string, or a bool. 
-But if a _Resource_ is something that needs to be read from hardware I/O, how do we do with reading it? You can give your _Resource_ a **spec** to tell the smart object how to do it:  
+<br />
 
-> A **spec** object, which can have read, write, or exec method(s) in it, is where you can inject the specific operations to tell the smart object of to access the _Resource_ .  
+The simplest case for a _Resource Value_ is being a primitive, like a number, a string, or a bool. 
+But if a _Resource_ is something that needs to be read from hardware I/O, how do we do with reading it? You can give your _Resource_ a **spec** to tell the smart object of how to do it:  
+
+> A **spec** object, which can have read, write, or exec method(s) in it, is where you can inject the specific operations to tell the smart object of how to access your _Resource_ .  
   
+<br />
+
 Let's figure it out step by step:  
 
 1. [_Resource Value_ is a primitive](#r_is_primitive)
@@ -27,7 +31,6 @@ Let's figure it out step by step:
 <br />
 
 
-********************************************
 <a name="r_is_primitive"></a>
 ### 1. _Resource value_ is a primitive
 
@@ -55,10 +58,11 @@ so.init('temperature', 0, {
         });
     }, 60*1000);
     ```
-- The problem of polling is that the requester **may not always get the newest value** each time it requests for the 'sensorValue'. A solution is to poll the sensor more frequently, e.g., every 100ms, but I think you never want to do so to keep your device busy.  
-- This is where the **spec** object comes in.  
+- The problem of polling is that the requester **may not always get the newest value** each time it requests for the 'sensorValue'. A solution is to poll the sensor more frequently, e.g., every 100ms, but I think you never want to do so to keep your device busy, and this is where the **spec** object comes in.  
   
 ********************************************
+<br />
+
 <a name="r_is_spec"></a>
 ### 2. _Resource value_ is a **spec** object
 
@@ -130,7 +134,7 @@ so.init('actuation', 6, {
 });
 ```
   
-Ok, good! You've not only learned how to read/write a _Resource_ but also learned how to do the 'Access Control' on a _Resource_. If the _Resource value_ is a primitive, **smartobject** will follow the access rules from IPSO specification. If your _Resource value_ is a primitive and you don't want to follow the default access rules, you can wrap it up with the special object we've just introduced. See this example:
+Ok, good! You've not only learned how to read/write a _Resource_ but also learned how to do the **Access Control** on a _Resource_. If the _Resource value_ is a primitive, **smartobject** will follow the access rules from IPSO specification. If your _Resource value_ is a primitive and you don't want to follow the default access rules, you can wrap it up with this kind of special object we've just introduced. See this example:
   
 ```js
 var tempVal = 26;
@@ -153,7 +157,7 @@ Next, let's take a look at something really cool - an _executable Resource_.
 
 This kind of _Resource_ allows you to issue a procedure on the `so`, for example, ask your device to blink a LED for 10 times. You can define some useful and interesting remote procedure calls (RPCs) with executable _Resources_.  
 
-To do so, give your _Resource_ an object with the `exec` method. In this case, the _Resource_ will be inherently an executable one, you will get an error and a special value of string `'_exec_'` when reading from or writing to it. This means that read and write methods are no use to an _executable Resource_ even if you do give an object with these two methods to the _Resource_.  
+To do so, give your _Resource_ an object with the `exec` method. In this case, the _Resource_ will be inherently an executable one, you will get an error and a special value of string `'_exec_'` when reading from or writing to it. This means that read and write methods are ineffective to an _executable Resource_ even if you do give an object with these two methods to the _Resource_.  
 
 If the _Resource_ is not an executable one, **smartoject** will respond a error and a special value of `'_unexecutable_'` passing to the second argument of `callback` when you trying to invoke it.  
   
