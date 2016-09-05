@@ -14,7 +14,7 @@ A Smart Object Class that helps you with creating IPSO Smart Objects in your Jav
 3. [Usage](#Usage)  
 4. [Resources Planning](#Resources)  
 5. [APIs](#APIs)  
-
+6. [Code Templates](https://github.com/PeterEB/smartobject/blob/master/docs/templates.md)  
 
 <a name="Overview"></a>
 ## 1. Overview
@@ -23,12 +23,16 @@ A Smart Object Class that helps you with creating IPSO Smart Objects in your Jav
   
 IPSO defines a hierarchical data model to describe real-world gadgets, such as temperature sensors and light switches.  
 * IPSO uses _**Object**_ to tell what kind of a gadget is, and uses _**Object Instance**_ to tell which one a gadget is.  
-* An _**Object**_ is like a class, and an _**Object Instance**_ is the entity of an _Object_.  
-* Each _**Object Instance**_ has an unique _**Object Instance Id**_ to identify itself from other gadgets of the same class.  
-* The _**Resources**_ are used to describe what attributes may a gadget have, for example, a temperature sensor may have attributes such as _sensorValue_, _unit_, _minMeaValue_, .etc.  
+* An _**Object**_ is like a class or a boilerplate, and each kind of _Object_ has an unique _Object Id_ (`oid`) defined by IPSO, e.g., 3303 for the _Temperature Sensor Object_.  
+* An _**Object Instance**_ is the entity of an _Object_. Each _**Object Instance**_ has an unique _**Object Instance Id**_ to identify itself from other gadgets of the same class. Simply speaking, `oid` is like a namespace to manage all the same kind of _IPSO Object Instances_.  
+* The _**Resources**_ are used to describe what attributes may a gadget have, for example, a temperature sensor may have attributes such as _sensorValue_, _unit_, _minMeaValue_, .etc. _**Resource Values**_  will be filled after instantiated.  
+
+![ISPO Model](https://github.com/lwmqn/documents/blob/master/media/ipso_model.png)
+
+[**Note**]
+* The _italics_, such _Object_, _Object Id_, _Object Instance_, and _Object Instance Id_, are used to distinguish the _**IPSO Objects**_ from the JavaScript **objects**.  
 * [lwm2m-id](https://github.com/simenkid/lwm2m-id#Identifiers) has listed the IPSO-defined _Object_ and _Resource_ identifiers.  
 
-[Note]: The _italics_, such _Object_, _Object Id_, _Object Instance_, and _Object Instance Id_, are used to distinguish the _**IPSO Objects**_ from the JavaScript **objects**.  
   
 
 <a name="Installation"></a>
@@ -103,9 +107,7 @@ Imagine that you have to read the temperature value from a sensor with one-wire 
 * How do you read the temperature value from your smart object?
 * How do you do with the access control? Your _Resource_ is readable? writable? or remotely executable?  
 
-Please refer to [Resources Planning Tutorial](https://github.com/PeterEB/smartobject/blob/master/docs/resource_plan.md) for more details.  
-  
-Here are the [code templates](https://github.com/PeterEB/smartobject/blob/master/docs/templates.md) of many IPSO-defined devices, such as temperature sensor, humidity sensor, and light control. Each template gives the code snippet of how to initialize an _Object Instance_ with its oid and iid, and lists every _Resource_ the _Object Instance_ may have.
+Please refer to [Resources Planning Tutorial](https://github.com/PeterEB/smartobject/blob/master/docs/resource_plan.md) for more details. It will show you how to initialize your _Resources_ and how to abstract your hardware with _IPSO Resources_ as well. In addition, here are some [code templates](https://github.com/PeterEB/smartobject/blob/master/docs/templates.md) for your convenience to create smart objects.  
 
 <a name="APIs"></a>
 ## 5. APIs
@@ -147,16 +149,14 @@ var so = new SmartObject();
 ### init(oid, iid, resrcs[, opt])
 Initialize an _Object Instance_ in `so`, where `oid` is the [_IPSO Object Id_](https://github.com/simenkid/lwm2m-id#Identifiers) to indicate what kind of your gadget is, `iid` is the _Object Instance Id_, and `resrcs` is an object that wraps up all the _Resources_.  
   
-* Simply speaking, `oid` is like a namespace to manage all the same kind of _IPSO Object Instances_. For example, our `so` has a `'temperature'` namespace, and there are 3 temperature sensors(_Object Instances_) within this namespace.  
 * You can initialize an _Object Instance_ with an empty `resrcs = {}`, and then use `set()` method to add _Resources_ one by one to the _Instance_. In my experience, initialize an _Object Instance_ with all _Resources_ at once is more elegant. For example, you can manage all your _Resources_ in a separated module, and export the whole thing to your main app to do the initialization.  
 * Be careful, invoking `init()` upon an existing _Instance_ will firstly wipe all its _Resources_ out and then put the new _Resources_ into it. Thus, it is better to initialize your _Instance_ only once throughout your code.  
-* [Resources Planning Tutorial](#TODO) will show you the how-tos about initializing your _Resources_ and exporting your hardware to _IPSO Resources_.
   
 **Arguments:**  
 
 1. `oid` (_String_ | _Number_): _IPSO Object Id_, for example, `'temperature'`. It also accepts a numeric id defined by IPSO, i.e.,`3303`, and `so` will internally turn it into its string version, say `'temperature'`, as the key.  
 2. `iid` (_String_ | _Number_): _Object Instance Id_, which tells different _Instances_. It would be nice to use numbers, i.e., `0`, `1`, `2`, `3` to strictly meet the IPSO definition. But strings are also accepted, e.g., `'sen01'`, `'sen02'`, `'sen03'`, it is just like a handle to help you distinguish different _Instances_ of the same _Object_ class.  
-3. `resrcs` (_Object_): _IPSO Resources_, which is an object with **rid-value pairs** to describe the _Resources_. Each key in `resrcs` is a _Resource Id_, which can be a string or a number. And each value can be a primitive, an data object, or an object with specific methods, i.e. read(), write(), exec(). [Resources Planning Tutorial](#TODO) will give you some hints.  
+3. `resrcs` (_Object_): _IPSO Resources_, which is an object with **rid-value pairs** to describe the _Resources_. Each key in `resrcs` is a _Resource Id_, which can be a string or a number. And each value can be a primitive, an data object, or an object with specific methods, i.e. read(), write(), exec(). The [Resources Planning Tutorial](https://github.com/PeterEB/smartobject/blob/master/docs/resource_plan.md) will give you some hints.  
 4. `opt` (_Object_): An option object, default is `{ ipsoOnly: false }`. If it is given with `{ ipsoOnly: true }`, then `oid` **must** be an IPSO-defined _Object Id_, `iid` **must** be a number, and all _Resource Ids_ within `resrcs` **must**  be IPSO-defined _Resource Ids_, or init() will throw Errors.  
 
 **Returns:**  
@@ -784,7 +784,7 @@ To see if a _Resource_ is executable.
 
 * (_Boolean_): Returns `true` if the _Resource_ is executable, otherwise `false`.  
 
-**Examples:** 
+**Examples:**
 
 ```js
 so.isExecutable('temperature', 8, 'sensorValue');   // false
