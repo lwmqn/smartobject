@@ -17,8 +17,8 @@
   },
   "homepage": "https://github.com/PeterEB/smartobject",
   "dependencies": {
-    "busyman": "^0.2.0",
-    "lwm2m-id": "^1.4.0"
+    "busyman": "^0.2.1",
+    "lwm2m-id": "^1.5.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
