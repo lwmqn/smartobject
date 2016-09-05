@@ -1,31 +1,36 @@
 ## Resources Planning Tutorial
 
-This document will show you how to organize your _Resources_ and how to abstract hardware into higher-level smart objects. To initialize your _Object Instance_, the only API you'll come across is `init(oid, iid, resrcs)`, where
+This document will show you how to organize your _Resources_ and how to abstract hardware into higher-level smart objects. To initialize your _Object Instance_, the only API you'll come across is `init(oid, iid, resrcs[, opt])`, where
 
 * `oid` is the _Object Id_
 * `iid` is the _Object Instance Id_
 * `resrcs` is an object to wrap your _IPSO Resources_ up. Each key in `resrcs` object is the `rid` and the value is the corresponding _Resource value_  
+* `opt` is an [option](https://github.com/PeterEB/smartobject#API_init) to restrict the identifiers  
   
-It is a very simple case that a _Resource Value_ may just be a primitive, like a number, a string, or a bool. 
-But if the Resource is not as simple as a 
-smartobject has a **spec** object, which can have read, write, or exec method(s) in it. That's how you can tell smartobject that: please access the _Resource_ like what I'm saying.
+The simplest case for a _Resource Value_ is being a primitive, like a number, a string, or a bool. 
+But if a _Resource_ is something that needs to be read from hardware I/O, how do we do with reading it? You can give your _Resource_ a **spec** to tell the smart object how to do it:  
+
+> A **spec** object, which can have read, write, or exec method(s) in it, is where you can inject the specific operations to tell the smart object of to access the _Resource_ .  
   
-1. [Resource value is a primitive](#r_is_primitive)
-    - [Poll and write the sensed value to the Resource](#poll)
-2. [Resource value is an object equipped with read or write method(s)](#rwmedthod)
-    - [Readable Resource]
-    - [Writable Resource]
-    - [Readable and Writable Resource]
-3. [Resource value is an object equipped with an exec method](#rwmedthod)
-    - [Excutable Resouce](#exec)  
+Let's figure it out step by step:  
+
+1. [_Resource Value_ is a primitive](#r_is_primitive)
+    - Let's take a temperatur sensor for exmaple
+    - Polling it, but how fast?
+2. [_Resource value_ is a **spec** object](#r_is_spec)
+    - Readable Resource
+    - Writable Resource
+    - Readable and Writable Resource
+    - Excutable Resouce
+
 
 <br />
+
 
 ********************************************
 <a name="r_is_primitive"></a>
 ### 1. _Resource value_ is a primitive
 
-********************************************
 #### 1.1 Let's take a temperatur sensor for exmaple:
 ```js
 // oid = 'temperature', iid = 0
@@ -36,38 +41,41 @@ so.init('temperature', 0, {
 ```
   
 ********************************************
-#### 1.2 Polling, but how fast?
-- You may think that the temperature value is time-varying, and surely just giving it a number is not a good idea. Developers are responsible for making this sensor play correctly. The simplest way is to poll the sensor regularly:
+#### 1.2 Polling it, but how fast?
+- You may think that the temperature value is time-varying, and surely just giving it a number is not a good idea. Developers are responsible for making this sensor play correctly. The simplest way is to poll the sensor and update the sensed value to the smart object regularly:
     ```js
     // Here, I use setInterval() to poll an analog input pin per 60 seconds,
     // and write the sensed value to the corresponding Resource
 
     setInterval(function () {
         var analogVal = analogPin0.read();
-        so.write('temperature', 0, 'sensorValue', analogVal);
+        so.write('temperature', 0, 'sensorValue', analogVal, function (err, val) {
+            if (!err)
+                // value written
+        });
     }, 60*1000);
     ```
 - The problem of polling is that the requester **may not always get the newest value** each time it requests for the 'sensorValue'. A solution is to poll the sensor more frequently, e.g., every 100ms, but I think you never want to do so to keep your device busy.  
 - This is where the **spec** object comes in.  
   
 ********************************************
+<a name="r_is_spec"></a>
 ### 2. _Resource value_ is a **spec** object
 
+**smartobject** allows a _Resource value_ to be an object with `read` and/or `write` method(s). You can tell `so` how to read/write your _Resource_ through this kind of method(s). Each time someone requests for the _Resource_, `so` will invoke the read() method on that _Resource_ to get its current value, e.g. reading from a gpio immediately.  
 
-**smartobject** allows a _Resource value_ to be an object with `read` and/or `write` method(s). You can tell `so` how to read/write your _Resource_ through this kind of object. Each time someone requests for the _Resource_, `so` will invoke the read() method on that _Resource_ to get its current value, e.g. reading from a gpio immediately.  
-
-********************************************
 #### 2.1 Readable Resource  
 It is very simple to use this pattern. The first thing you need to know is that the signature of `read` method is `function(cb)`, where `cb(err, value)` is an err-back function that **you should call** and pass the read value through its second argument when read operation accomplishes. If any error occurs, pass the error through the first argument.  
 
-Let's go back to the previous example:  
+Let's go back to the previous example and make a modification:  
   
 ```js
 so.init('temperature', 0, {
     sensorValue: {
         read: function (cb) {
-            var analogVal = analogPin0.read();
-            cb(null, analogVal);
+            analogPin0.read(function (val) {
+                cb(null, val);
+            });
         }
     },
     units: 'cel'
@@ -84,32 +92,39 @@ The pattern for a writable _Resource_ is similar. The signature of `write` metho
 so.init('actuation', 6, {
     onOff: {
         write: function (value, cb) {
-            digitalPin2.write(value);
-
-            var digitalVal = digitalPin2.read();
-            cb(null, digitalVal);
+            digitalPin2.write(value, function (err) {
+                if (err)
+                    cb(err);
+                else
+                    cb(null, value);
+            });
         }
     }
 });
 ```
   
-In this example, we only define the write method for the _Resource_, thus it is writable but not readable. If someone is trying to read this _Resource_, he will get an error and a special value of string `'_unreadable_'` passing to the second argument of `callback`.  
+In this example, we only define the write method for the _Resource_, thus it is writable but not readable. If someone is trying to read this _Resource_, `so` will give him/her an error and a special value of string `'_unreadable_'` passing to the second argument of `callback`.  
   
 ********************************************
 #### 2.3 Readable and writable Resource  
 
-If this Resource is both readable and writable, you should give both of read and write methods to it:
+If this _Resource_ is both readable and writable, you should give both of read and write methods to it:
   
 ```js
 so.init('actuation', 6, {
     onOff: {
         read: function () {
-            var digitalVal = digitalPin2.read();
-            cb(null, digitalVal);
+            digitalPin2.read(function (val) {
+                cb(null, val);
+            });
         },
         write: function (value, cb) {
-            digitalPin2.write(value);
-            cb(null, digitalPin2.read());
+            digitalPin2.write(value, function (err) {
+                if (err)
+                    cb(err);
+                else
+                    cb(null, value);
+            });
         }
     }
 });
@@ -136,13 +151,14 @@ Next, let's take a look at something really cool - an _executable Resource_.
 ********************************************
 #### 2.4 _Excutable Resource_
 
-This kind of _Resource_ allows you to issue a procedure on the `so`, for example, ask your device to blink a LED for 10 times. You can define some useful and interesting remote procedure calls(RPCs) with executable _Resources_.  
+This kind of _Resource_ allows you to issue a procedure on the `so`, for example, ask your device to blink a LED for 10 times. You can define some useful and interesting remote procedure calls (RPCs) with executable _Resources_.  
 
-To do so, give your _Resource_ an object with the `exec` method. In this case, the _Resource_ will be inherently an executable one, you will get an error and a special value of string `'_exec_'` when reading from or writing to it. This means that read and write methods are meaningless to an _executable Resource_ even if you do give an object with these two methods to the _Resource_.  
+To do so, give your _Resource_ an object with the `exec` method. In this case, the _Resource_ will be inherently an executable one, you will get an error and a special value of string `'_exec_'` when reading from or writing to it. This means that read and write methods are no use to an _executable Resource_ even if you do give an object with these two methods to the _Resource_.  
 
 If the _Resource_ is not an executable one, **smartoject** will respond a error and a special value of `'_unexecutable_'` passing to the second argument of `callback` when you trying to invoke it.  
   
-#### Example: An excutable Resource to blink a led  
+<br />
+#### Example: An excutable _Resource_ to blink a led  
 
 It's time to show you an example. Assume that we have an _executable Resource_ `function(led, t)` on the device to start blinking the `led` with `t` times.  
   
@@ -163,11 +179,12 @@ so.init('myObject', 0, {
   
 The signature of `exec` method is `function(...[, cb])`, and
 * The number of arguments depends on your own definition  
-* The callback `cb(err, data)` should be called when your procedure is correctly called  
+* The callback `cb(err, data)` should be called when your procedure is correctly invoked  
 
   
-### Excutable Resource is Good
+<br />
+#### Excutable Resource is Cool
 
 An _Executable Resource_ is a necessary if you like to do something complicated.  
 
-Think of that how do you blink a certain led with arbitrary times if you are just using general readable/writable _Resources_? That can be a pain. IoT is not just about reading something from or writing something to machines. An Executable Resource is very powerful and it let your machines do more things and be more automatic.  
+Think of that how do you blink a certain led with arbitrary times if you are just using general readable/writable _Resources_? That can be a pain. IoT is not just about reading something from or writing something to machines. An Executable Resource is very powerful and it lets your machines do more things and be more automatic.  
