@@ -55,7 +55,7 @@ Here is a quick example to show you how to create your _Smart Object_ with only 
     ```js
     so.init(
         'temperature',          // 'temperature' is the IPSO-defined Object Identifier (oid, 3303).
-        0,                      // 0 is the Object Instance Id (iid) assgined by you.
+        0,                      // 0 is the Object Instance Id (iid) assigned by you.
         {                       // This object contains all Resources (attributes) this sensor has. 
             sensorValue: 31,    // 'sensorValue' is the IPSO-defined Resource Id (rid, 5700) 
             units : 'C'         // 'units' is the IPSO-defined Resource Id (rid, 5701) 
@@ -444,7 +444,7 @@ Asynchronously write a value to the specified _Resource_.
 |----------------|------------------|--------------------------------------------------------------------|  
 | Error object   | `'_notfound_'`   | _Resource_ not found.                                              |  
 | Error object   | `'_unwritable_'` | _Resource_ is unwritable.                                          |  
-| Error object   | `'_exec_'`       | _Resource_ is unwritable (Becasue it is an executable _Resource_). |  
+| Error object   | `'_exec_'`       | _Resource_ is unwritable (Because it is an executable _Resource_). |  
 | `null`         | Depends          | _Resource_ is successfully write.                                  |  
 
 
@@ -530,13 +530,13 @@ so.init('foo_object', 0, {
     }
 });
 
-// Excute the blink Resource on it
+// Execute the blink Resource on it
 so.exec('foo_object', 0, 'blink', [ 3, 10 ], function (err, data) {
     if (!err)
         console.log(data);  // { status: 'ok', led: 3, times: 10 }
 });
 
-// Excute a Resource that doesn't exist
+// Execute a Resource that doesn't exist
 so.exec('foo_object', 0, 'show', [], function (err, data) {
     if (err) {
         console.log(err);   // Error: 'Resource not found.'
