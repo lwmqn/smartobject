@@ -4,7 +4,7 @@ This document will show you how to organize your _Resources_ and how to abstract
 
 * `oid` is the _Object Id_
 * `iid` is the _Object Instance Id_
-* `resrcs` is an object to wrap your _IPSO Resources_ up. Each key in `resrcs` object is the `rid` and the value is the corresponding _Resource value_  
+* `resrcs` is an object to wrap your _IPSO Resources_ up. Each key in `resrcs` object is the `rid` and the value is the corresponding _Resource Value_  
 * `opt` is an [option](https://github.com/PeterEB/smartobject#API_init) to restrict the identifiers  
   
 <br />
@@ -12,7 +12,7 @@ This document will show you how to organize your _Resources_ and how to abstract
 The simplest case for a _Resource Value_ is being a primitive, like a number, a string, or a bool. 
 But if a _Resource_ is something that needs to be read from hardware I/O, how do we do with reading it? You can give your _Resource_ a **spec** to tell the smart object of how to do it:  
 
-> A **spec** object, which can have read, write, or exec method(s) in it, is where you can inject the specific operations to tell the smart object of how to access your _Resource_ .  
+> A **spec** object, which can have read, write, or exec method(s) in it, is where you can inject the specific operations to tell the smart object of how to access your _Resource_.  
   
 <br />
 
@@ -21,20 +21,20 @@ Let's figure it out step by step:
 1. [_Resource Value_ is a primitive](#r_is_primitive)
     - Let's take a temperatur sensor for exmaple
     - Polling it, but how fast?
-2. [_Resource value_ is a **spec** object](#r_is_spec)
+2. [_Resource Value_ is a **spec** object](#r_is_spec)
     - Readable Resource
     - Writable Resource
     - Readable and Writable Resource
-    - Excutable Resouce
+    - Executable Resource
 
 
 <br />
 
 
 <a name="r_is_primitive"></a>
-### 1. _Resource value_ is a primitive
+### 1. _Resource Value_ is a primitive
 
-#### 1.1 Let's take a temperatur sensor for exmaple:
+#### 1.1 Let's take a temperature sensor for example:
 ```js
 // oid = 'temperature', iid = 0
 so.init('temperature', 0, {
@@ -64,9 +64,9 @@ so.init('temperature', 0, {
 <br />
 
 <a name="r_is_spec"></a>
-### 2. _Resource value_ is a **spec** object
+### 2. _Resource Value_ is a **spec** object
 
-**smartobject** allows a _Resource value_ to be an object with `read` and/or `write` method(s). You can tell `so` how to read/write your _Resource_ through this kind of method(s). Each time someone requests for the _Resource_, `so` will invoke the read() method on that _Resource_ to get its current value, e.g. reading from a gpio immediately.  
+**smartobject** allows a _Resource Value_ to be an object with `read` and/or `write` method(s). You can tell `so` how to read/write your _Resource_ through this kind of method(s). Each time someone requests for the _Resource_, `so` will invoke the read() method on that _Resource_ to get its current value, e.g. reading from a gpio immediately.  
 
 #### 2.1 Readable Resource  
 It is very simple to use this pattern. The first thing you need to know is that the signature of `read` method is `function(cb)`, where `cb(err, value)` is an err-back function that **you should call** and pass the read value through its second argument when read operation accomplishes. If any error occurs, pass the error through the first argument.  
@@ -90,7 +90,7 @@ See, it's simple. If you define this object with a read method, this _Resource_ 
   
 ********************************************
 #### 2.2 Writable Resource  
-The pattern for a writable _Resource_ is similar. The signature of `write` method is `function(value, cb)`, where `value` is the value to wirte to this _Resource_ and `cb(err, value)` is an err-back function that you should call and pass the written value through its second argument. Example again:  
+The pattern for a writable _Resource_ is similar. The signature of `write` method is `function(value, cb)`, where `value` is the value to write to this _Resource_ and `cb(err, value)` is an err-back function that you should call and pass the written value through its second argument. Example again:  
   
 ```js
 so.init('actuation', 6, {
@@ -134,7 +134,7 @@ so.init('actuation', 6, {
 });
 ```
   
-Ok, good! You've not only learned how to read/write a _Resource_ but also learned how to do the **Access Control** on a _Resource_. If the _Resource value_ is a primitive, **smartobject** will follow the access rules from IPSO specification. If your _Resource value_ is a primitive and you don't want to follow the default access rules, you can wrap it up with this kind of special object we've just introduced. See this example:
+Ok, good! You've not only learned how to read/write a _Resource_ but also learned how to do the **Access Control** on a _Resource_. If the _Resource Value_ is a primitive, **smartobject** will follow the access rules from IPSO specification. If your _Resource Value_ is a primitive and you don't want to follow the default access rules, you can wrap it up with this kind of special object we've just introduced. See this example:
   
 ```js
 var tempVal = 26;
@@ -153,7 +153,7 @@ Next, let's take a look at something really cool - an _executable Resource_.
 
   
 ********************************************
-#### 2.4 _Excutable Resource_
+#### 2.4 _Executable Resource_
 
 This kind of _Resource_ allows you to issue a procedure on the `so`, for example, ask your device to blink a LED for 10 times. You can define some useful and interesting remote procedure calls (RPCs) with executable _Resources_.  
 
@@ -162,7 +162,7 @@ To do so, give your _Resource_ an object with the `exec` method. In this case, t
 If the _Resource_ is not an executable one, **smartoject** will respond a error and a special value of `'_unexecutable_'` passing to the second argument of `callback` when you trying to invoke it.  
   
 <br />
-#### Example: An excutable _Resource_ to blink a led  
+#### Example: An executable _Resource_ to blink a led  
 
 It's time to show you an example. Assume that we have an _executable Resource_ `function(led, t)` on the device to start blinking the `led` with `t` times.  
   
@@ -187,7 +187,7 @@ The signature of `exec` method is `function(...[, cb])`, and
 
   
 <br />
-#### Excutable Resource is Cool
+#### Executable Resource is Cool
 
 An _Executable Resource_ is a necessary if you like to do something complicated.  
 
