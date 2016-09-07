@@ -1,6 +1,6 @@
 {
   "name": "smartobject",
-  "version": "0.1.5",
+  "version": "1.0.0",
   "description": "A Smart Object Class that helps you with creating IPSO Smart Objects in your JavaScript applications",
   "main": "index.js",
   "scripts": {
@@ -10,6 +10,10 @@
     "type": "git",
     "url": "https://github.com/PeterEB/smartobject.git"
   },
+  "keywords": [
+    "ipso",
+    "smartobject"
+  ],
   "author": "",
   "license": "MIT",
   "bugs": {
