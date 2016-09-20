@@ -364,7 +364,7 @@ so.set('dOut', 2, 'dOutState', function (cb) {
 
 *************************************************
 <a name="API_read"></a>
-### read(oid, iid, rid, callback[, opt])
+### read(oid, iid, rid[, opt], callback)
 Asynchronously read the specified _Resource_ value.  
 
 **Arguments:**  
@@ -372,8 +372,8 @@ Asynchronously read the specified _Resource_ value.
 1. `oid` (_String_ | _Number_): _Object Id_ of the target.
 2. `iid` (_String_ | _Number_): _Object Instance Id_ of the target.
 3. `rid` (_String_ | _Number_): _Resource Id_ of the target.
-4. `callback` (_Function_): `function (err, data) { ... }`. Will be called when reading is done or any error occurs, where `data` is the _Resource_ value. (When an error occurs, `so` will pass you a string like `'_notfound_'` with `data`, you can use it as a hint to choose a status code to respond back to the requester.)
-5. `opt` (_Object_): An option used to read _Resources_ in restrict mode, default is `{ restrict: false }`. If it is given with `{ restrict: true }`, this method will follow the access control specification defined by IPSO. This option may be set to `true` to respond to a remote _read request_ (access from outside world should be under control).
+4. `opt` (_Object_): An option used to read _Resources_ in restrict mode, default is `{ restrict: false }`. If it is given with `{ restrict: true }`, this method will follow the access control specification defined by IPSO. This option may be set to `true` to respond to a remote _read request_ (access from outside world should be under control).
+5. `callback` (_Function_): `function (err, data) { ... }`. Will be called when reading is done or any error occurs, where `data` is the _Resource_ value. (When an error occurs, `so` will pass you a string like `'_notfound_'` with `data`, you can use it as a hint to choose a status code to respond back to the requester.)
   
 * This table show you what results may the callback receive:   
 
@@ -426,7 +426,7 @@ so.read('barometer', 6, 'resetMinMaxMeaValues', function (err, data) {
 
 *************************************************
 <a name="API_write"></a>
-### write(oid, iid, rid, value, callback[, opt])
+### write(oid, iid, rid, value[, opt], callback)
 Asynchronously write a value to the specified _Resource_.  
 
 **Arguments:**  
@@ -435,8 +435,8 @@ Asynchronously write a value to the specified _Resource_.
 2. `iid` (_String_ | _Number_): _Object Instance Id_ of the target.  
 3. `rid` (_String_ | _Number_): _Resource Id_ of the target.   
 4. `value` (_Depends_): The value to write to the specified _Resource_.  
-5. `callback` (_Function_): `function (err, data) { ... }`. Will be called when writing is done or any error occurs, where `data` is the _Resource_ value written. (When an error occurs, `so` will pass you a string like `'_notfound_'` with `data`, you can use it as a hint to choose a status code to respond back to the requester.)  
-6. `opt` (_Object_): An option used to write _Resources_ in restrict mode.  
+5. `opt` (_Object_): An option used to write _Resources_ in restrict mode. Default is `{ restrict: false }` if not given.  
+6. `callback` (_Function_): `function (err, data) { ... }`. Will be called when writing is done or any error occurs, where `data` is the _Resource_ value written. (When an error occurs, `so` will pass you a string like `'_notfound_'` with `data`, you can use it as a hint to choose a status code to respond back to the requester.)  
 
 * This table show you what results may the callback receive:   
 
@@ -547,19 +547,25 @@ so.exec('foo_object', 0, 'show', [], function (err, data) {
 
 *************************************************
 <a name="API_dump"></a>
-### dump([oid[, iid],] callback[, opt])
+### dump([oid[, iid][, opt],] callback)
 Asynchronously dump data from `so`. This method uses the asynchronous `read()` under the hood.  
 
 * Given with `oid`, `iid`, and a `callback` to dump data of an _Object Instance_.  
+    - `dump(oid, iid, function (err, data) {})`
+    - `dump(oid, iid, { restrict: true }, function (err, data) {})`
 * Given with `oid` and a `callback` to dump data of an _Object_.  
+    - `dump(oid, function (err, data) {})`
+    - `dump(oid, { restrict: true }, function (err, data) {})`
 * Given with only a `callback` to dump data of whole smart object.  
+    - `dump(function (err, data) {})`
+    - `dump({ restrict: true }, function (err, data) {})`
 
 **Arguments:**  
 
 1. `oid` (_String_ | _Number_): _Object Id_ of the target.  
 2. `iid` (_String_ | _Number_): _Object Instance Id_ of the target.  
 3. `callback` (_Function_): `function (err, data) { }`.  
-4. `opt` (_Object_): An option used to dump _Resources_ in restrict mode.  
+4. `opt` (_Object_): An option used to dump _Resources_ in restrict mode. Default is `{ restrict: false }` if not given.  
 
 **Returns:**  
 

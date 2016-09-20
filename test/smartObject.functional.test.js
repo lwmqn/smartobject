@@ -272,10 +272,10 @@ describe('Smart Object - Functional Check', function () {
                 }
             });
 
-            smartObj.dump(3305, 0, function (err, result) {
+            smartObj.dump(3305, 0, { restrict: true }, function (err, result) {
                 if (_.isEqual(result, obj)) 
                     done();
-            }, { restrict: true });
+            });
         });
 
         it('should return error', function (done) {
@@ -330,31 +330,31 @@ describe('Smart Object - Functional Check', function () {
         });
 
         it('should pass the read value when restrict is true', function (done) {
-            smartObj.read(3305, 0, 5800, function (err, result) {
+            smartObj.read(3305, 0, 5800, { restrict: true }, function (err, result) {
                 if (result === 20) 
                     done();
-            }, { restrict: true });
+            });
         });
 
         it('should pass the read value when restrict is true', function (done) {
-            smartObj.read(3305, 0, 5801, function (err, result) {
+            smartObj.read(3305, 0, 5801, { restrict: true }, function (err, result) {
                 if (result === 'c')
                     done();
-            }, { restrict: true });
+            });
         });
 
         it('should pass the read value when restrict is true', function (done) {
-            smartObj.read(3305, 0, 5821, function (err, result) {
+            smartObj.read(3305, 0, 5821, { restrict: true }, function (err, result) {
                 if (result === 'x') 
                     done();
-            }, { restrict: true });
+            });
         });
 
         it('should pass _unreadable_ when restrict is true', function (done) {
-            smartObj.read(3305, 0, 5806, function (err, result) {
+            smartObj.read(3305, 0, 5806, { restrict: true }, function (err, result) {
                 if (err && result === '_unreadable_') 
                     done();
-            }, { restrict: true });
+            });
         });
 
         it('should pass _unreadable_ when Resources is writable', function (done) {
@@ -402,31 +402,31 @@ describe('Smart Object - Functional Check', function () {
         });
 
         it('should pass the write value when restrict is true', function (done) {
-            smartObj.write(3305, 0, 5806, 'f', function (err, result) {
+            smartObj.write(3305, 0, 5806, 'f', { restrict: true }, function (err, result) {
                 if (result === 'f' && (smartObj.get(3305, 0, 5806) === 'f')) 
                     done();
-            }, { restrict: true });
+            });
         });
 
         it('should pass the write value when restrict is true', function (done) {
-            smartObj.write(3305, 0, 5821, 'y', function (err, result) {
+            smartObj.write(3305, 0, 5821, 'y', { restrict: true }, function (err, result) {
                 if (result === 'y' && (smartObj.get(3305, 0, 5821) === 'y')) 
                     done();
-            }, { restrict: true });
+            });
         });
 
         it('should pass _unwritable_ when restrict is true', function (done) {
-            smartObj.write(3305, 0, 5800, 30, function (err, result) {
+            smartObj.write(3305, 0, 5800, 30, { restrict: true }, function (err, result) {
                 if (err && result === '_unwritable_' && (smartObj.get(3305, 0, 5800) === 20)) 
                     done();
-            }, { restrict: true });
+            });
         });
 
         it('should pass _unwritable_ when restrict is true', function (done) {
-            smartObj.write(3305, 0, 5801, 'x', function (err, result) {
+            smartObj.write(3305, 0, 5801, 'x', { restrict: true }, function (err, result) {
                 if (err && result === '_unwritable_' && (smartObj.get(3305, 0, 5801) === 'c')) 
                     done();
-            }, { restrict: true });
+            });
         });
 
         it('should pass _unwritable_ when Resources is readable', function (done) {
