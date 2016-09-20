@@ -511,12 +511,12 @@ describe('Smart Object - Signature Check', function () {
             expect(function () { return smartObj.dump(null, function () {}); }).to.throw(TypeError);
             expect(function () { return smartObj.dump(NaN, function () {}); }).to.throw(TypeError);
             expect(function () { return smartObj.dump([], function () {}); }).to.throw(TypeError);
-            expect(function () { return smartObj.dump({}, function () {}); }).to.throw(TypeError);
             expect(function () { return smartObj.dump(true, function () {}); }).to.throw(TypeError);
             expect(function () { return smartObj.dump(new Date(), function () {}); }).to.throw(TypeError);
             expect(function () { return smartObj.dump(function () {}, function () {}); }).to.throw(TypeError);
 
-            expect(function () { return smartObj.dump(3303, function () {}, {}); }).not.to.throw(TypeError);
+            expect(function () { return smartObj.dump({}, function () {}); }).not.to.throw(TypeError);          // opt
+            expect(function () { return smartObj.dump(3303, {}, function () {}); }).not.to.throw(TypeError);    // opt
         });
 
         it('should throw TypeError if iid is not a string or a number', function () {
@@ -524,12 +524,12 @@ describe('Smart Object - Signature Check', function () {
             expect(function () { return smartObj.dump(3303, null, function () {}); }).to.throw(TypeError);
             expect(function () { return smartObj.dump(3303, NaN, function () {}); }).to.throw(TypeError);
             expect(function () { return smartObj.dump(3303, [], function () {}); }).to.throw(TypeError);
-            expect(function () { return smartObj.dump(3303, {}, function () {}); }).to.throw(TypeError);
             expect(function () { return smartObj.dump(3303, true, function () {}); }).to.throw(TypeError);
             expect(function () { return smartObj.dump(3303, new Date(), function () {}); }).to.throw(TypeError);
             expect(function () { return smartObj.dump(3303, function () {}, function () {}); }).to.throw(TypeError);
 
-            expect(function () { return smartObj.dump(3303, 0, function () {}, {}); }).not.to.throw(TypeError);
+            expect(function () { return smartObj.dump(3303, {}, function () {}); }).not.to.throw(TypeError);    // opt
+            expect(function () { return smartObj.dump(3303, 0, {}, function () {}); }).not.to.throw(TypeError); // opt
         });
 
         it('should throw TypeError if given opt is not an object', function () {
@@ -538,9 +538,9 @@ describe('Smart Object - Signature Check', function () {
             expect(function () { return smartObj.dump(3303, 2, function () {}, []); }).to.throw(TypeError);
             expect(function () { return smartObj.dump(3303, 2, function () {}, true); }).to.throw(TypeError);
             expect(function () { return smartObj.dump(3303, 2, function () {}, new Date()); }).to.throw(TypeError);
-            expect(function () { return smartObj.dump(3303, 2, function () {}, function () {}); }).to.throw(TypeError);
 
-            expect(function () { return smartObj.dump(3303, 2, function () {}, {}); }).not.to.throw(TypeError);
+            expect(function () { return smartObj.dump(3303, 2, function () {}, function () {}); }).not.to.throw(TypeError);
+            expect(function () { return smartObj.dump(3303, 2, {}, function () {}); }).not.to.throw(TypeError);
         });
     });
 
@@ -589,14 +589,15 @@ describe('Smart Object - Signature Check', function () {
         });
 
         it('should throw TypeError if given opt is not an object', function () {
-            expect(function () { return smartObj.read(3303, 2, 5700, function () {}, 10); }).to.throw(TypeError);
-            expect(function () { return smartObj.read(3303, 2, 5700, function () {}, 'xx'); }).to.throw(TypeError);
-            expect(function () { return smartObj.read(3303, 2, 5700, function () {}, []); }).to.throw(TypeError);
-            expect(function () { return smartObj.read(3303, 2, 5700, function () {}, true); }).to.throw(TypeError);
-            expect(function () { return smartObj.read(3303, 2, 5700, function () {}, new Date()); }).to.throw(TypeError);
-            expect(function () { return smartObj.read(3303, 2, 5700, function () {}, function () {}); }).to.throw(TypeError);
+            var cb = function () {};
+            expect(function () { return smartObj.read(3303, 2, 5700, 10, cb); }).to.throw(TypeError);
+            expect(function () { return smartObj.read(3303, 2, 5700, 'xx', cb); }).to.throw(TypeError);
+            expect(function () { return smartObj.read(3303, 2, 5700, [], cb); }).to.throw(TypeError);
+            expect(function () { return smartObj.read(3303, 2, 5700, true, cb); }).to.throw(TypeError);
+            expect(function () { return smartObj.read(3303, 2, 5700, new Date(), cb); }).to.throw(TypeError);
 
-            expect(function () { return smartObj.read(3303, 2, 5700, function () {}, {}); }).not.to.throw(TypeError);
+            expect(function () { return smartObj.read(3303, 2, 5700, function () {}, cb); }).not.to.throw(TypeError);
+            expect(function () { return smartObj.read(3303, 2, 5700, {}); }).not.to.throw(TypeError);
         });
     });
 
@@ -657,14 +658,15 @@ describe('Smart Object - Signature Check', function () {
         });
 
         it('should throw TypeError if given opt is not an object', function () {
-            expect(function () { return smartObj.write(3303, 2, 5700, 30, function () {}, 10); }).to.throw(TypeError);
-            expect(function () { return smartObj.write(3303, 2, 5700, 30, function () {}, 'xx'); }).to.throw(TypeError);
-            expect(function () { return smartObj.write(3303, 2, 5700, 30, function () {}, []); }).to.throw(TypeError);
-            expect(function () { return smartObj.write(3303, 2, 5700, 30, function () {}, true); }).to.throw(TypeError);
-            expect(function () { return smartObj.write(3303, 2, 5700, 30, function () {}, new Date()); }).to.throw(TypeError);
-            expect(function () { return smartObj.write(3303, 2, 5700, 30, function () {}, function () {}); }).to.throw(TypeError);
+            var cb = function () {};
+            expect(function () { return smartObj.write(3303, 2, 5700, 30, 10, cb); }).to.throw(TypeError);
+            expect(function () { return smartObj.write(3303, 2, 5700, 30, 'xx', cb); }).to.throw(TypeError);
+            expect(function () { return smartObj.write(3303, 2, 5700, 30, [], cb); }).to.throw(TypeError);
+            expect(function () { return smartObj.write(3303, 2, 5700, 30, true, cb); }).to.throw(TypeError);
+            expect(function () { return smartObj.write(3303, 2, 5700, 30, new Date(), cb); }).to.throw(TypeError);
 
-            expect(function () { return smartObj.write(3303, 2, 5700, 30, function () {}, {}); }).not.to.throw(TypeError);
+            expect(function () { return smartObj.write(3303, 2, 5700, 30, function () {}, cb); }).not.to.throw(TypeError);
+            expect(function () { return smartObj.write(3303, 2, 5700, 30, {}); }).not.to.throw(TypeError);
         });
     });
 

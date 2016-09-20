@@ -5,7 +5,7 @@ This document will show you how to organize your _Resources_ and how to abstract
 * `oid` is the _Object Id_
 * `iid` is the _Object Instance Id_
 * `resrcs` is an object to wrap your _IPSO Resources_ up. Each key in `resrcs` object is the `rid` and the value is the corresponding _Resource Value_  
-* `opt` is an [option](https://github.com/PeterEB/smartobject#API_init) to restrict the identifiers  
+* `opt` is an [option](https://github.com/PeterEB/smartobject#API_init) to restrict the identifiers to IPSO-defined only  
   
 <br />
 

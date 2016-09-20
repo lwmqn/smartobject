@@ -150,11 +150,11 @@ describe('Object Instance - Functional Check', function () {
                 }
             });
 
-            objectInstPwr.dump(function (err, result) {
+            objectInstPwr.dump({ restrict: true }, function (err, result) {
                 if (_.isEqual(result, obj)) {
                     done();
                 }
-            }, { restrict: true });
+            });
         });
 
         it('should return error', function (done) {
@@ -192,17 +192,17 @@ describe('Object Instance - Functional Check', function () {
         });
 
         it('should pass the read value when restrict is true', function (done) {
-            objectInstPwr.read(5800, function (err, result) {
+            objectInstPwr.read(5800, { restrict: true }, function (err, result) {
                 if (result === 20) 
                     done();
-            }, { restrict: true });
+            });
         });
 
         it('should pass the read value when restrict is true', function (done) {
-            objectInstPwr.read(5801, function (err, result) {
+            objectInstPwr.read(5801, { restrict: true }, function (err, result) {
                 if (result === 'c') 
                     done();
-            }, { restrict: true });
+            });
         });
 
         it('should pass the read value when restrict is true', function (done) {
@@ -213,10 +213,10 @@ describe('Object Instance - Functional Check', function () {
         });
 
         it('should pass _unreadable_ when restrict is true', function (done) {
-            objectInstPwr.read(5806, function (err, result) {
+            objectInstPwr.read(5806, { restrict: true }, function (err, result) {
                 if (err && result === '_unreadable_') 
                     done();
-            }, { restrict: true });
+            });
         });
 
         it('should pass _unreadable_ when Resources is writable', function (done) {
@@ -264,31 +264,31 @@ describe('Object Instance - Functional Check', function () {
         });
 
         it('should pass the write value when restrict is true', function (done) {
-            objectInstPwr.write(5806, 'f', function (err, result) {
+            objectInstPwr.write(5806, 'f', { restrict: true }, function (err, result) {
                 if (result === 'f' && (objectInstPwr.get(5806) === 'f')) 
                     done();
-            }, { restrict: true });
+            });
         });
 
         it('should pass the write value when restrict is true', function (done) {
-            objectInstPwr.write(5821, 'y', function (err, result) {
+            objectInstPwr.write(5821, 'y', { restrict: true }, function (err, result) {
                 if (result === 'y' && (objectInstPwr.get(5821) === 'y')) 
                     done();
-            }, { restrict: true });
+            });
         });
 
         it('should pass the write value when restrict is true', function (done) {
-            objectInstPwr.write(5800, 30, function (err, result) {
+            objectInstPwr.write(5800, 30, { restrict: true }, function (err, result) {
                 if (err && result === '_unwritable_' && (objectInstPwr.get(5800) === 20)) 
                     done();
-            }, { restrict: true });
+            });
         });
 
         it('should pass _unwritable_ when restrict is true', function (done) {
-            objectInstPwr.write(5801, 'x', function (err, result) {
+            objectInstPwr.write(5801, 'x', { restrict: true }, function (err, result) {
                 if (err && result === '_unwritable_' && (objectInstPwr.get(5801) === 'c')) 
                     done();
-            }, { restrict: true });
+            });
         });
 
         it('should pass _unwritable_ when Resources is readable', function (done) {

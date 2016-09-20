@@ -120,14 +120,15 @@ describe('Object Instance - Signature Check', function () {
         });
 
         it('should throw TypeError if given opt is not an object', function () {
-            expect(function () { return objectInst.dump(null, 10); }).to.throw(TypeError);
-            expect(function () { return objectInst.dump(null, 'xx'); }).to.throw(TypeError);
-            expect(function () { return objectInst.dump(null, []); }).to.throw(TypeError);
-            expect(function () { return objectInst.dump(null, true); }).to.throw(TypeError);
-            expect(function () { return objectInst.dump(null, new Date()); }).to.throw(TypeError);
-            expect(function () { return objectInst.dump(null, function () {}); }).to.throw(TypeError);
+            var cb = function () {};
+            expect(function () { return objectInst.dump(10, cb); }).to.throw(TypeError);
+            expect(function () { return objectInst.dump('xx', cb); }).to.throw(TypeError);
+            expect(function () { return objectInst.dump([], cb); }).to.throw(TypeError);
+            expect(function () { return objectInst.dump(true, cb); }).to.throw(TypeError);
+            expect(function () { return objectInst.dump(new Date(), cb); }).to.throw(TypeError);
 
-            expect(function () { return objectInst.dump(null, {}); }).not.to.throw(TypeError);
+            expect(function () { return objectInst.dump(function () {}); }).not.to.throw(TypeError);
+            expect(function () { return objectInst.dump({}, cb); }).not.to.throw(TypeError);
         });
     });
 
@@ -158,14 +159,15 @@ describe('Object Instance - Signature Check', function () {
         });
 
         it('should throw TypeError if given opt is not an object', function () {
-            expect(function () { return objectInst.read(5700, function () {}, 10); }).to.throw(TypeError);
-            expect(function () { return objectInst.read(5700, function () {}, 'xx'); }).to.throw(TypeError);
-            expect(function () { return objectInst.read(5700, function () {}, []); }).to.throw(TypeError);
-            expect(function () { return objectInst.read(5700, function () {}, true); }).to.throw(TypeError);
-            expect(function () { return objectInst.read(5700, function () {}, new Date()); }).to.throw(TypeError);
-            expect(function () { return objectInst.read(5700, function () {}, function () {}); }).to.throw(TypeError);
+            var cb = function () {};
+            expect(function () { return objectInst.read(5700, 10, cb); }).to.throw(TypeError);
+            expect(function () { return objectInst.read(5700, 'xx', cb); }).to.throw(TypeError);
+            expect(function () { return objectInst.read(5700, [], cb); }).to.throw(TypeError);
+            expect(function () { return objectInst.read(5700, true, cb); }).to.throw(TypeError);
+            expect(function () { return objectInst.read(5700, new Date(), cb); }).to.throw(TypeError);
 
-            expect(function () { return objectInst.read(5700, function () {}, {}); }).not.to.throw(TypeError);
+            expect(function () { return objectInst.read(5700, function () {}); }).not.to.throw(TypeError);
+            expect(function () { return objectInst.read(5700, {}); }).not.to.throw(TypeError);
         });
     });
 
@@ -202,14 +204,15 @@ describe('Object Instance - Signature Check', function () {
         });
 
         it('should throw TypeError if given opt is not an object', function () {
-            expect(function () { return objectInst.write(5700, 30, function () {}, 10); }).to.throw(TypeError);
-            expect(function () { return objectInst.write(5700, 30, function () {}, 'xx'); }).to.throw(TypeError);
-            expect(function () { return objectInst.write(5700, 30, function () {}, []); }).to.throw(TypeError);
-            expect(function () { return objectInst.write(5700, 30, function () {}, true); }).to.throw(TypeError);
-            expect(function () { return objectInst.write(5700, 30, function () {}, new Date()); }).to.throw(TypeError);
-            expect(function () { return objectInst.write(5700, 30, function () {}, function () {}); }).to.throw(TypeError);
+            var cb = function () {};
+            expect(function () { return objectInst.write(5700, 30, 10, cb); }).to.throw(TypeError);
+            expect(function () { return objectInst.write(5700, 30, 'xx', cb); }).to.throw(TypeError);
+            expect(function () { return objectInst.write(5700, 30, [], cb); }).to.throw(TypeError);
+            expect(function () { return objectInst.write(5700, 30, true, cb); }).to.throw(TypeError);
+            expect(function () { return objectInst.write(5700, 30, new Date(), cb); }).to.throw(TypeError);
 
-            expect(function () { return objectInst.write(5700, 30, function () {}, {}); }).not.to.throw(TypeError);
+            expect(function () { return objectInst.write(5700, 30, function () {}); }).not.to.throw(TypeError);
+            expect(function () { return objectInst.write(5700, 30, {}); }).not.to.throw(TypeError);
         });
     });
 
