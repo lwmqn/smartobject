@@ -1,6 +1,6 @@
 {
   "name": "smartobject",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A Smart Object Class that helps you with creating IPSO Smart Objects in your JavaScript applications",
   "main": "index.js",
   "scripts": {
