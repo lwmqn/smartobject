@@ -8,8 +8,10 @@ describe('Smart Object - Instance read/write/exec cb bind this to instance itsel
     describe('#read', function () {
         it('should bind this to instance itself in read method', function (done) {
             smartObj.init(3303, 0, { 
+                a: 'hello world',
                 5700: {
                     read: function (cb) {
+                        console.log(this.a);
                         cb(null, this);
                     }    
                 }
