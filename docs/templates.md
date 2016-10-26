@@ -56,7 +56,7 @@ so.init('dIn', 0, {
 so.init('dOut', 0, {
     dOutState: {                    // < rid = 5550, RW, Boolean >
         read: function (cb) {},
-        write: function (cb) {}
+        write: function (value, cb) {}
     },
     // dOutpolarity: ,              // < rid = 5551, RW, Boolean { 0: normal, 1: reversed } >
     // appType:                     // < rid = 5750, RW, String >
@@ -92,7 +92,7 @@ so.init('aIn', 0, {
 so.init('aOut', 0, {
     aOutCurrValue: {                // < rid = 5650, RW, Float >
         read: function (cb) {},
-        write: function (cb) {}
+        write: function (value, cb) {}
     },
     // minRangeValue: ,             // < rid = 5603,  R, Float >
     // maxRangeValue: ,             // < rid = 5604,  R, Float >
@@ -235,7 +235,7 @@ so.init('pwrMea', 0, {
 so.init('actuation', 0, {
     onOff: {                        // < rid = 5850, RW, Boolean { 0: off, 1: on } >
         read: function (cb) {},
-        write: function (cb) {}
+        write: function (value, cb) {}
     },
     // dimmer: ,                    // < rid = 5851, RW, Integer { 0 ~ 100 }, % >
     // onTime: ,                    // < rid = 5852, RW, Integer, s >
@@ -253,7 +253,7 @@ so.init('actuation', 0, {
 so.init('setPoint', 0, {
     setPointValue: {                // < rid = 5900, RW, Float >
         read: function (cb) {},
-        write: function (cb) {}
+        write: function (value, cb) {}
     },
     // colour: ,                    // < rid = 5706, RW, String >
     // units: ,                     // < rid = 5701,  R, String >
@@ -270,15 +270,15 @@ so.init('setPoint', 0, {
 so.init('loadCtrl', 0, {
     eventId: {                      // < rid = 5823, RW, String >
         read: function (cb) {},
-        write: function (cb) {}
+        write: function (value, cb) {}
     },
     startTime: {                    // < rid = 5824, RW, Time >
         read: function (cb) {},
-        write: function (cb) {}
+        write: function (value, cb) {}
     },
     durationInMin: {                // < rid = 5825, RW, Integer, min >
         read: function (cb) {},
-        write: function (cb) {}
+        write: function (value, cb) {}
     },
     // criticalLevel: ,             // < rid = 5826, RW, Integer { 0: normal, 1: warning, 2: danger, 3: fatal } >
     // avgLoadAdjPct: ,             // < rid = 5827, RW, Integer { 0 ~ 100 }, % >
@@ -295,7 +295,7 @@ so.init('loadCtrl', 0, {
 so.init('lightCtrl', 0, {
     onOff: {                        // < rid = 5850, RW, Boolean { 0: off, 1: on } >
         read: function (cb) {},
-        write: function (cb) {}
+        write: function (value, cb) {}
     },
     // dimmer: ,                    // < rid = 5851, RW, Integer { 0 ~ 100 }, %  >
     // colour: ,                    // < rid = 5706, RW, String >
@@ -315,7 +315,7 @@ so.init('lightCtrl', 0, {
 so.init('pwrCtrl', 0, {
     onOff: {                        // < rid = 5850, RW, Boolean { 0: off, 1: on } >
         read: function (cb) {},
-        write: function (cb) {}
+        write: function (value, cb) {}
     },
     // dimmer: ,                    // < rid = 5851, RW, Integer { 0 ~ 100 }, % >
     // onTime: ,                    // < rid = 5852, RW, Integer, s >
@@ -485,7 +485,7 @@ so.init('gyrometer', 0, {
 so.init('colour', 0, {
     colour: {                       // < rid = 5706, RW, String >
         read: function (cb) {},
-        write: function (val, cb) {}
+        write: function (value, cb) {}
     },
     // units: ,                     // < rid = 5701,  R, String >
     // appType:                     // < rid = 5750, RW, String >
@@ -522,7 +522,7 @@ so.init('gpsLocation', 0, {
 so.init('positioner', 0, {
     currentPos: {                   // < rid = 5536, RW, Float {100} >
         read: function (cb) {},
-        write: function (val, cb) {}
+        write: function (value, cb) {}
     },
     // transTime: ,                // < rid = 5537, RW, Float >
     // remainTime: ,               // < rid = 5538,  R, Float >
@@ -544,7 +544,7 @@ so.init('positioner', 0, {
 so.init('buzzer', 0, {
     onOff: {                        // < rid = 5850, RW, Boolean >
         read: function (cb) {},
-        write: function (val, cb) {}
+        write: function (value, cb) {}
     },
     // level: ,                     // < rid = 5548, RW, Float {100} >
     // timeDuration: ,              // < rid = 5521, RW, Float >
@@ -562,7 +562,7 @@ so.init('buzzer', 0, {
 so.init('audioClip', 0, {
     clip: {                         // < rid = 5522, RW, Opaque >
         read: function (cb) {},
-        write: function (val, cb) {}
+        write: function (value, cb) {}
     },
     // trigger:                     // < rid = 5523,  E, Opaque >
     // level: ,                     // < rid = 5548, RW, Float {100} >
@@ -580,7 +580,7 @@ so.init('audioClip', 0, {
 so.init('timer', 0, {
     timeDuration: {                 // < rid = 5521, R, Float >
         read: function (cb) {}
-        write: function (val, cb) {}
+        write: function (value, cb) {}
     },
     // remainTime: ,                // < rid = 5538,  R, Float >
     // minOffTime: ,                // < rid = 5525, RW, Float >
@@ -642,7 +642,7 @@ so.init('onOffSwitch', 0, {
 so.init('levelControl', 0, {
     level: {                        // < rid = 5548, RW, Float {100} >
         read: function (cb) {},
-        write: function (val, cb) {}
+        write: function (value, cb) {}
     },
     // onTime: ,                    // < rid = 5852, RW, Integer, s >
     // offTime: ,                   // < rid = 5854, RW, Integer, s >

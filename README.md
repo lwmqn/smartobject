@@ -27,7 +27,7 @@ IPSO defines a hierarchical data model to describe real-world gadgets, such as t
 * An _**Object Instance**_ is the entity of an _Object_. Each _**Object Instance**_ has an unique _**Object Instance Id**_ to identify itself from other gadgets of the same class. Simply speaking, `oid` is like a namespace to manage all the same kind of _IPSO Object Instances_.  
 * The _**Resources**_ are used to describe what attributes may a gadget have, for example, a temperature sensor may have attributes such as _sensorValue_, _unit_, _minMeaValue_, .etc. _**Resource Values**_  will be filled after instantiated.  
 
-![ISPO Model](https://github.com/lwmqn/documents/blob/master/media/ipso_model.png)
+![ISPO Model](https://raw.githubusercontent.com/lwmqn/documents/master/media/ipso_model.png)
 
 [**Note**]
 * The _italics_, such _Object_, _Object Id_, _Object Instance_, and _Object Instance Id_, are used to distinguish the _**IPSO Objects**_ from the JavaScript **objects**.  
