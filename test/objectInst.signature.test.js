@@ -1,7 +1,7 @@
 var expect = require('chai').expect,
     ObjectInstance = require('../lib/object_instance'); 
 
-var objectInst = new ObjectInstance('temperature', 0);
+var objectInst = new ObjectInstance('temperature', 0, { ipsoOnly: false });
 
 describe('Object Instance - Signature Check', function () {
     describe('#.init()', function () {
@@ -24,19 +24,19 @@ describe('Object Instance - Signature Check', function () {
             expect(function () { return objectInst.init({}); }).not.to.throw(TypeError);
         });
 
-        it('should throw TypeError if given opt is not an object', function () {
+        it('should throw TypeError if given setup is not a function', function () {
             expect(function () { return objectInst.init({ 5700: 30 }, 10); }).to.throw(TypeError);
             expect(function () { return objectInst.init({ 5700: 30 }, 'xx'); }).to.throw(TypeError);
             expect(function () { return objectInst.init({ 5700: 30 }, []); }).to.throw(TypeError);
             expect(function () { return objectInst.init({ 5700: 30 }, true); }).to.throw(TypeError);
             expect(function () { return objectInst.init({ 5700: 30 }, new Date()); }).to.throw(TypeError);
-            expect(function () { return objectInst.init({ 5700: 30 }, function () {}); }).to.throw(TypeError);
 
-            expect(function () { return objectInst.init({ 5700: 30 }, {}); }).not.to.throw(TypeError);
+            expect(function () { return objectInst.init({ 5700: 30 }, function () {}); }).not.to.throw(TypeError);
         });
 
         it('should throw TypeError if iid is not a number when ipsoOnly is true', function () {
-            expect(function () { return objectInst.init({ 9453: 30 }, { ipsoOnly: true }); }).to.throw(TypeError);
+            objectInst.parent.ipsoOnly = true;
+            expect(function () { return objectInst.init({ 9453: 30 }, function () {}); }).to.throw(TypeError);
         });
     });
 
