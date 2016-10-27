@@ -24,14 +24,16 @@ smartObj1.init('test', 0, {
     r2: 2
 });
 
-smartObj2.init('test', 0, {
+var resrc2 = {
+    _state: {
+        state1: 'state1',
+        state2: 'state2'
+    },
     r1: 1,
     r2: 2
-}, {
-    ipsoOnly: false,
-    state1: 'state1',
-    state2: 'state2'
-});
+};
+
+smartObj2.init('test', 0, resrc2);
 
 describe('Smart Object - Hal', function () {
     describe('#smartObj1 this.hal', function () {
@@ -73,11 +75,6 @@ describe('Smart Object Instance - Resource', function () {
 
 describe('Smart Object Instance - _state', function () {
     describe('#smartObj2.test instance: this._state', function () {
-        it('ipsoOnly should equal to false', function () {
-            var inst = smartObj2.findObjectInstance('test', 0);
-            expect(inst._state.ipsoOnly).to.be.equal(false);
-        });
-
         it('state1 should equal to state1', function () {
             var inst = smartObj2.findObjectInstance('test', 0);
             expect(inst._state.state1).to.be.equal('state1');
@@ -92,13 +89,6 @@ describe('Smart Object Instance - _state', function () {
 
 describe('Smart Object Instance - init then clear', function () {
     describe('#smartObj2.test instance: init', function () {
-        it('ipsoOnly should equal to false', function () {
-            var inst = smartObj2.findObjectInstance('test', 0);
-            smartObj2.init('test', 0, {});
-
-            expect(inst._state.ipsoOnly).to.be.equal(false);
-        });
-
         it('state1 should equal to state1', function () {
             var inst = smartObj2.findObjectInstance('test', 0);
 

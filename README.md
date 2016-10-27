@@ -125,12 +125,13 @@ Please refer to [Resources Planning Tutorial](https://github.com/PeterEB/smartob
 Exposed by `require('smartobject')`.  
 
 <a name="API_smartobject"></a>
-### new SmartObject()
-Create an instance of SmartObject class. This document will use `so` to indicate this kind of instance. A `so` can hold many _IPSO Objects_ in it.  
+### new SmartObject([hal][, setup])
+Create an instance of SmartObject class. This document will use `so` to indicate this kind of instance. A `so` can hold many _IPSO Objects_ in it. The `so` instance has an accessible but un-enumerable boolean property `'ipsoOnly'` to tell whether this `so` only accepts IPSO-defined `oid` and `rid`. Default value for `so.ipsoOnly` is `false`. You can set it to `true` in the `setup` function.  
 
 **Arguments:**  
 
-1. none
+1. `hal` (_Object_): Optional. A component or controller of the hardware abstraction layer. It will be assigned to `this.hal` at creation of a SmartObject instance. Noted that `this.hal` is accessible but not enumerable.  
+2. `setup` (_Function_): Optional. A setup function to do some initializing work if given, for example, setting gpio direction. In this function, `this` will be bound to the `so` instance, thus you can use `this.hal` to access your hardware.  
 
 **Returns:**  
 
@@ -138,30 +139,55 @@ Create an instance of SmartObject class. This document will use `so` to indicate
 
 **Examples:** 
 
+* A very simple case. There is no hardware with the smart object.  
+
 ```js
 var SmartObject = require('smartobject');
 
 var so = new SmartObject();
 ```
 
+* We have 2 LEDs and 1 Switch controlled via `mraa`.
+
+```js
+var m = require('mraa');
+var SmartObject = require('smartobject');
+
+var so = new SmartObject({
+    led1: new m.Gpio(44),
+    led2: new m.Gpio(44),
+    switch: new m.Gpio(45),
+    foo: 'bar'
+}, function () {
+    var hal = this.hal;
+
+    hal.led1.dir(m.DIR_OUT);
+    hal.led2.dir(m.DIR_OUT);
+    hal.switch.dir(m.DIR_IN);
+    hal.foo = 'initialized';
+
+    this.ipsoOnly = true;   // this smart object is restricted to IPSO-defined things
+});
+```
+
 *************************************************
 <a name="API_init"></a>
-### init(oid, iid, resrcs[, opt])
-Initialize an _Object Instance_ in `so`, where `oid` is the [_IPSO Object Id_](https://github.com/simenkid/lwm2m-id#Identifiers) to indicate what kind of your gadget is, `iid` is the _Object Instance Id_, and `resrcs` is an object that wraps up all the _Resources_.  
+### init(oid, iid, resrcs[, _state])
+Initialize an _Object Instance_ in `so`, where `oid` is the [_IPSO Object Id_](https://github.com/simenkid/lwm2m-id#Identifiers) to indicate what kind of your gadget is, `iid` is the _Object Instance Id_, and `resrcs` is an object that wraps up all the _Resources_. `_state` is an protected member of object where you can maintain some inner states or flags of the _Object Instance_. The returned _Object Instance_ `objInst` has two accessible but un-enumerable properties `'parent'` and `'_state'`, where you can use `this.parent` to get the `so` instance and use `this._state` to access the `objInst` inner state.  
   
 * You can initialize an _Object Instance_ with an empty `resrcs = {}`, and then use `set()` method to add _Resources_ one by one to the _Instance_. In my experience, initialize an _Object Instance_ with all _Resources_ at once is more elegant. For example, you can manage all your _Resources_ in a separated module, and export the whole thing to your main app to do the initialization.  
-* Be careful, invoking `init()` upon an existing _Instance_ will firstly wipe all its _Resources_ out and then put the new _Resources_ into it. Thus, it is better to initialize your _Instance_ only once throughout your code.  
+* Be careful, invoking `init()` upon an existing _Instance_ will firstly wipe out all its _Resources_ and inner `_state` and then put the new _Resources_ into it. Thus, it is better to initialize your _Instance_ only once throughout your code.  
   
 **Arguments:**  
 
 1. `oid` (_String_ | _Number_): _IPSO Object Id_, for example, `'temperature'`. It also accepts a numeric id defined by IPSO, i.e.,`3303`, and `so` will internally turn it into its string version, say `'temperature'`, as the key.  
 2. `iid` (_String_ | _Number_): _Object Instance Id_, which tells different _Instances_. It would be nice to use numbers, i.e., `0`, `1`, `2`, `3` to strictly meet the IPSO definition. But strings are also accepted, e.g., `'sen01'`, `'sen02'`, `'sen03'`, it is just like a handle to help you distinguish different _Instances_ of the same _Object_ class.  
 3. `resrcs` (_Object_): _IPSO Resources_, which is an object with **rid-value pairs** to describe the _Resources_. Each key in `resrcs` is a _Resource Id_, which can be a string or a number. And each value can be a primitive, an data object, or an object with specific methods, i.e. read(), write(), exec(). The [Resources Planning Tutorial](https://github.com/PeterEB/smartobject/blob/master/docs/resource_plan.md) will give you some hints.  
-4. `opt` (_Object_): An option object, default is `{ ipsoOnly: false }`. If it is given with `{ ipsoOnly: true }`, then `oid` **must** be an IPSO-defined _Object Id_, `iid` **must** be a number, and all _Resource Ids_ within `resrcs` **must**  be IPSO-defined _Resource Ids_, or init() will throw Errors.  
+4. `_state` (_Object_): Optional. An option object, default is `{ ipsoOnly: this.parent.ipsoOnly }`. If it is given with `{ ipsoOnly: true }`, then `oid` **must** be an IPSO-defined _Object Id_, `iid` **must** be a number, and all _Resource Ids_ within `resrcs` **must**  be IPSO-defined _Resource Ids_, or init() will throw Errors. In addtion, you can use this protected object to maintain the `objInst` inner state.  
 
 **Returns:**  
 
-* (_Object_): The initialized _Object Instance_.  
+* (_Object_): `objInst`, the initialized _Object Instance_.  
 
 **Examples:** 
 
@@ -202,6 +228,47 @@ so.init(3303, 18, {
     }
 }
 */
+```
+
+```js
+var m = require('mraa');
+var SmartObject = require('smartobject');
+
+var so = new SmartObject({
+    led1: new m.Gpio(44),
+}, function () {
+    var hal = this.hal;
+    hal.led1.dir(m.DIR_OUT);
+});
+
+so.init('lightCtrl', 0 , {
+    _state: {   // protected resource to maintain inner states
+        readCounts: 0,
+        writeCounts: 0
+    },
+    onOff: {
+        read: function (cb) {
+            var hal = this.parent.hal;
+            var ledState = hal.led1.read();
+
+            this._state.readCounts += 1;
+
+            process.nextTick(function () {
+                cb(null, ledState);
+            });
+        },
+        write: function (val, cb) {
+            var hal = this.parent.hal;
+            hal.led1.write(val);
+
+            this._state.writeCounts += 1;
+
+            process.nextTick(function () {
+                cb(null, hal.led1.read());
+            });
+        }
+    }
+});
 ```
 
 *************************************************
@@ -264,7 +331,7 @@ To see if `so` has the specified _Object_, _Object Instance_, or _Resource_.
 
 1. `oid` (_String_ | _Number_): _Object Id_ of the target.  
 2. `iid` (_String_ | _Number_): _Object Instance Id_ of the target.  
-3. `rid` (_String_ | _Number_): _Resource Id_ of the target.   
+3. `rid` (_String_ | _Number_): _Resource Id_ of the target.  
 
 **Returns:**  
 
