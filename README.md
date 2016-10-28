@@ -19,7 +19,7 @@ A Smart Object Class that helps you with creating IPSO Smart Objects in your Jav
 <a name="Overview"></a>
 ## 1. Overview
 
-**smartobject** is a _Smart Object_ Class that helps you with creating [_IPSO_](http://www.ipso-alliance.org/) _Smart Objects_ in your JavaScript applications. If you like to use the IPSO data model in your projects or products, you can use **smartobject** as the base class to abstract your hardware, sensor modules, or gadgets into plugins (node.js packages) for users convenience.  
+**smartobject** is a _Smart Object_ Class that helps you with creating [_IPSO_](http://www.ipso-alliance.org/) _Smart Objects_ in your JavaScript applications. If you like to use the IPSO data model in your projects or products, you can use **smartobject** as the base class to abstract your hardware, sensor modules, or gadgets into plugins (node.js packages) for users convenience. In addition, this module is isomorphic and you can use it at server-side to generate the smart objects.  
   
 IPSO defines a hierarchical data model to describe real-world gadgets, such as temperature sensors and light controllers.  
 * IPSO uses _**Object**_ to tell what kind of a gadget is, and uses _**Object Instance**_ to tell which one a gadget is.  
@@ -54,7 +54,7 @@ Here is a quick example to show you how to create your _Smart Object_ with only 
     ```js
     so.init(
         'temperature',          // 'temperature' is the IPSO-defined Object Identifier (oid, 3303).
-        0,                      // 0 is the Object Instance Id (iid) assigned by you.
+        0,                      // 0 is the unique Object Instance Id (iid) assigned by you.
         {                       // This object contains all Resources (attributes) this sensor has. 
             sensorValue: 31,    // 'sensorValue' is the IPSO-defined Resource Id (rid, 5700) 
             units : 'C'         // 'units' is the IPSO-defined Resource Id (rid, 5701) 
@@ -119,6 +119,9 @@ Please refer to [Resources Planning Tutorial](https://github.com/PeterEB/smartob
 * [dump()](#API_dump), [dumpSync()](#API_dumpSync)
 * [isReadable()](#API_isReadable), [isWritable()](#API_isWritable), [isExecutable()](#API_isExecutable)
 
+[**Note**]
+* In general, the most often used APIs are `new SmartObject()`, `init()`, `read()`, and `write()`. It's not that complicated as it looks like.  
+  
 *************************************************
 ## SmartObject Class
 Exposed by `require('smartobject')`.  
@@ -127,14 +130,14 @@ Exposed by `require('smartobject')`.
 ### new SmartObject([hal][, setup])
 Create an instance of SmartObject class. This document will use `so` to indicate this kind of instance.  
 
-A `so` can hold many _IPSO Objects_ in it. The `so` instance has an accessible but un-enumerable boolean property `'ipsoOnly'` to tell if this `so` only accepts IPSO-defined `oid`s and `rid`s. Default value for `so.ipsoOnly` is `false`. You can set it to `true` in the `setup` function.  
+A `so` can hold many _IPSO Object Instances_ in it. The `so` itself has an accessible but un-enumerable boolean property `'ipsoOnly'` to tell if this `so` only accepts IPSO-defined `oid` and `rid`. Default value for `so.ipsoOnly` is `false`. You can set it to `true` in the `setup` function.  
 
 If `so.ipsoOnly == true`, then the given `oid` must be an IPSO-defined Object Id, `iid` must be a number, and all Resource Ids within `resrcs` must be IPSO-defined Resource Ids, or `so.init()` will throw Errors.  
 
 **Arguments:**  
 
 1. `hal` (_Object_): Optional. A component or controller of the hardware abstraction layer. It will be assigned to `this.hal` at creation of a `so`. Noted that `so.hal` is accessible but un-enumerable.  
-2. `setup` (_Function_): Optional. A setup function allows you to do some initializing work, for example, setting gpio direction. In this function, `this` will be bound to the `so` instance itself, thus you can use `this.hal` to access your hardware.  
+2. `setup` (_Function_): Optional. A setup function allows you to do some initializing work, for example, setting gpio direction. In the setup function, `this` will be bound to the `so` itself, thus you can use `this.hal` to access your hardware.  
 
 **Returns:**  
 
@@ -142,7 +145,7 @@ If `so.ipsoOnly == true`, then the given `oid` must be an IPSO-defined Object Id
 
 **Examples:** 
 
-* A very simple case. There is no hardware with the smart object.  
+* A very simple case. There is no hardware with the smart object. For example, at server-side we only need the **data** of a smart object.  
 
 ```js
 var SmartObject = require('smartobject');
@@ -150,7 +153,7 @@ var SmartObject = require('smartobject');
 var so = new SmartObject();
 ```
 
-* No hardware, and you like to make `so` accept IPSO-defined identifiers only.  
+* No hardware, and you like to make `so` accept only IPSO-defined identifiers.  
 
 ```js
 var SmartObject = require('smartobject');
@@ -160,7 +163,7 @@ var so = new SmartObject(function () {
 });
 ```
 
-* We have 2 LEDs and 1 Switch controlled via `mraa`.
+* We have 2 LEDs and 1 Switch controlled via `mraa`. This is a typical example at client-side (machine).  
 
 ```js
 var m = require('mraa');
@@ -169,7 +172,7 @@ var SmartObject = require('smartobject');
 var myHardware = {
     led1: new m.Gpio(44),
     led2: new m.Gpio(44),
-    switch: new m.Gpio(45),
+    onOffSwitch: new m.Gpio(45),
     foo: 'bar'
 };
 
@@ -179,7 +182,7 @@ var so = new SmartObject(myHardware, function () {
     // hardware initialization
     hal.led1.dir(m.DIR_OUT);
     hal.led2.dir(m.DIR_OUT);
-    hal.switch.dir(m.DIR_IN);
+    hal.onOffSwitch.dir(m.DIR_IN);
 
     hal.foo = 'initialized';
     this.ipsoOnly = true;
@@ -197,7 +200,7 @@ Create and initialize an _Object Instance_ in `so`, where `oid` is the [_IPSO Ob
 **Arguments:**  
 
 1. `oid` (_String_ | _Number_): _IPSO Object Id_, for example, `'temperature'` or `3303`. `so` will internally turn the id into its string version, say `'temperature'`, as the key if given with a numeric id.  
-2. `iid` (_String_ | _Number_): _Object Instance Id_. It would be nice to use numbers, i.e., `0`, `1`, `2` to strictly meet the IPSO definition. But strings are also accepted, e.g., `'sen01'`, `'sen02'`, `'sen03'`, it is just like a handle to help you distinguish different _Instances_ of the same _Object_ class.  
+2. `iid` (_String_ | _Number_): _Object Instance Id_. It would be nice to use numbers, i.e., `0`, `1`, `2` to strictly meet the IPSO definition. But strings are also accepted, e.g., `'sen01'`, `'sen02'`, `'sen03'`, it is just like a handle to help you distinguish different _Instances_ that share the same _Object_ class.  
 3. `resrcs` (_Object_): _IPSO Resources_, which is an object with **rid-value pairs** to describe the _Resources_. Each key in `resrcs` is a _Resource Id_ that can be a string or a number. And each value can be a primitive, an data object, or an object with specific methods, i.e. read(), write(), exec(). The [Resources Planning Tutorial](https://github.com/PeterEB/smartobject/blob/master/docs/resource_plan.md) will give you some hints. You can have your private information or inner states assigned to the `resrc._state` property, for example `resrc = { _state: { foo: 'bar' } }`.  
 4. `setup` (_Function_): Optional. A setup function allows you to set some things up, for example, setting some flags or states for inner use. In this function, `this` will be bound to the _Object Instance_ itself, thus you can use `this._state` to access your inner state. Further more, you can use `this.parent` to get the `so` which holds this _Object Instance_, and use `this.parent.hal` to access your hardware.  
 
@@ -218,6 +221,9 @@ so.init('temperature', 0, {
 });
 
 so.init('temperature', 1, {
+    _state: {           // inner state
+        foo: 'bar'
+    },
     sensorValue: 75,
     units : 'F'
 });
@@ -225,9 +231,14 @@ so.init('temperature', 1, {
 so.init(3303, 18, {
     sensorValue: 301,
     units : 'K'
+}, function () {
+    // this._state is an empty object by default
+    // you can attach things to it
+    this._state.foo = 'bar';
 });
 
 // Dumped data of the so will look like:
+// (inner _state will not be dumped)
 /*
 {
     temperature: {
@@ -254,12 +265,10 @@ so.init(3303, 18, {
 var m = require('mraa');
 var SmartObject = require('smartobject');
 
-var myHardware = {
+var so = new SmartObject({
     led: new m.Gpio(44),
     switch: new m.Gpio(45)
-};
-
-var so = new SmartObject(myHardware, function () {
+}, function () {
     var hal = this.hal;
 
     // hardware initialization
@@ -278,6 +287,7 @@ so.init('lightCtrl', 0 , {
     onOff: {
         read: function (cb) {
             // 'this' is bound to Object Instance itself
+            // this.parent === so
             var hal = this.parent.hal;
             var ledState = hal.led.read();
 
