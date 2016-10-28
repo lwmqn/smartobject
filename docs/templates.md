@@ -1,12 +1,12 @@
 ## Code Templates
 
 This document provides many templates of IPSO-defined devices [(Smart Objects starter pack 1.0)](http://www.ipso-alliance.org/smart-object-guidelines/) for your reference in defining gadgets with **smartobject**.  
-* Each template gives a code snippet of how to initialize an _Object Instance_ with its `oid` and `iid`, and lists every _Resource_ the _Object Instance_ may have.  
+* Each template gives a code snippet of how to initialize an _Object Instance_ with its `oid` and `iid`, and lists every _Resource_ the _Object Instance_ **may** have.  
 * In a code snippet, commented lines are optional _Resources_. You are free to uncomment and define those optional _Resources_ you like to use within an _Object Instance_.  
 * A phrase `< rid number, access, data type { range or enum }, unit >` tells the numeric id, access permission, and data type of a _Resource_ defined by IPSO.  
 * Just copy and paste the snippets, then make some changes to fit your needs.  
 
-### Catalog
+### Catalog of _Objects_
 
 
 |                                            |                                              |                                               |                                                   |
