@@ -3,9 +3,9 @@ var util = require('util'),
     expect = require('chai').expect,
     ObjectInstance = require('../lib/object_instance'); 
 
-var objectInst = new ObjectInstance('temperature', 0),
-    objectInst2 = new ObjectInstance('temperature', 0),
-    objectInstPwr = new ObjectInstance('pwrMea', 0);
+var objectInst = new ObjectInstance('temperature', 0, { ipsoOnly: false }),
+    objectInst2 = new ObjectInstance('temperature', 0, { ipsoOnly: false }),
+    objectInstPwr = new ObjectInstance('pwrMea', 0, { ipsoOnly: false });
 
 describe('Object Instance - Functional Check', function () {
     describe('#.init()', function () {

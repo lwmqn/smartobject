@@ -53,21 +53,24 @@ describe('Smart Object - Signature Check', function () {
             expect(function () { return smartObj.init(3302, 13, {}, []); }).to.throw(TypeError);
             expect(function () { return smartObj.init(3302, 14, {}, true); }).to.throw(TypeError);
             expect(function () { return smartObj.init(3302, 15, {}, new Date()); }).to.throw(TypeError);
-            expect(function () { return smartObj.init(3302, 16, {}, function () {}); }).to.throw(TypeError);
+            expect(function () { return smartObj.init(3302, 17, {}, {}); }).to.throw(TypeError);
 
-            expect(function () { return smartObj.init(3302, 17, {}, {}); }).not.to.throw(TypeError);
+            expect(function () { return smartObj.init(3302, 16, {}, function () {}); }).not.to.throw(TypeError);
         });
 
         it('should throw TypeError if iid is not a number when ipsoOnly is true', function () {
-            expect(function () { return smartObj.init(3304, 'x', {}, { ipsoOnly: true }); }).to.throw(TypeError);
+            smartObj.ipsoOnly = true;
+            expect(function () { return smartObj.init(3304, 'x', {}); }).to.throw(TypeError);
         });
 
         it('should throw Error if oid is not in an IPSO-defined when ipsoOnly is true', function () {
-            expect(function () { return smartObj.init(9453, 0, {}, { ipsoOnly: true }); }).to.throw(Error);
+            smartObj.ipsoOnly = true;
+            expect(function () { return smartObj.init(9453, 0, {}); }).to.throw(Error);
         });
 
         it('should throw Error if rid is not in an IPSO-defined when ipsoOnly is true', function () {
-            expect(function () { return smartObj.init(3304, 0, { 9999: 20 }, { ipsoOnly: true }); }).to.throw(Error);
+            smartObj.ipsoOnly = true;
+            expect(function () { return smartObj.init(3304, 0, { 9999: 20 }); }).to.throw(Error);
         });
     });
 
@@ -89,6 +92,8 @@ describe('Smart Object - Signature Check', function () {
         });
 
         it('should throw TypeError if iid is not a string or a number', function () {
+            smartObj.ipsoOnly = false;
+
             expect(function () { return smartObj.create(3304); }).to.throw(TypeError);
             expect(function () { return smartObj.create(3304, undefined); }).to.throw(TypeError);
             expect(function () { return smartObj.create(3304, null); }).to.throw(TypeError);
@@ -103,23 +108,16 @@ describe('Smart Object - Signature Check', function () {
             expect(function () { return smartObj.create(3304, 'b'); }).not.to.throw(TypeError);
         });
 
-        it('should throw TypeError if given opt is not an object', function () {
-            expect(function () { return smartObj.create(3304, 3, 10); }).to.throw(TypeError);
-            expect(function () { return smartObj.create(3304, 3, 'xx'); }).to.throw(TypeError);
-            expect(function () { return smartObj.create(3304, 3, []); }).to.throw(TypeError);
-            expect(function () { return smartObj.create(3304, 3, true); }).to.throw(TypeError);
-            expect(function () { return smartObj.create(3304, 3, new Date()); }).to.throw(TypeError);
-            expect(function () { return smartObj.create(3304, 3, function () {}); }).to.throw(TypeError);
-
-            expect(function () { return smartObj.create(3304, 3, {}); }).not.to.throw(TypeError);
-        });
-
         it('should throw TypeError if iid is not a number when ipsoOnly is true', function () {
-            expect(function () { return smartObj.create(3304, 'x', { ipsoOnly: true }); }).to.throw(TypeError);
+            expect(function () {
+                smartObj.ipsoOnly = true;
+                return smartObj.create(3304, 'x1');
+            }).to.throw(TypeError);
         });
 
         it('should throw Error if oid is not in an IPSO-defined when ipsoOnly is true', function () {
-            expect(function () { return smartObj.create(9453, 0, { ipsoOnly: true }); }).to.throw(Error);
+            smartObj.ipsoOnly = true;
+            expect(function () { return smartObj.create(9453, 0); }).to.throw(Error);
         });
     });
 

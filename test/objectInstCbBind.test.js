@@ -11,7 +11,6 @@ describe('Smart Object - Instance read/write/exec cb bind this to instance itsel
                 a: 'hello world',
                 5700: {
                     read: function (cb) {
-                        console.log(this.a);
                         cb(null, this);
                     }    
                 }
