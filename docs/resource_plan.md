@@ -4,13 +4,13 @@ This document will show you how to organize your _Resources_ and how to abstract
 
 * `oid` is the _Object Id_
 * `iid` is the _Object Instance Id_
-* `resrcs` is an object to wrap your _IPSO Resources_ up. Each key in `resrcs` object is the `rid` and the value is the corresponding _Resource Value_. A protected resource `_state` is an object where you can maintain some private information ot state inside the _Object Instance).  
-* `setup` is a function that allows you to set some inner things for the _Object Instance_. You can use `this._state` to access the inner state, use `this.parent` to get the `so`, and use `this.parent.hal` to access your hardware.  
+* `resrcs` is an object to wrap your _IPSO Resources_ up. Each key in `resrcs` object is the `rid` and the value is the corresponding _Resource Value_. A protected resource `_state` is an object where you can maintain some private information or inner state inside the _Object Instance_.  
+* `setup` is a function that allows you to set some inner things up for the _Object Instance_. You can use `this._state` to access the inner state, use `this.parent` to get the `so`, and use `this.parent.hal` to access your hardware.  
   
 <br />
 
 The simplest case for a _Resource Value_ is being a primitive, like a number, a string, or a bool. 
-But if a _Resource_ is something that needs to be read from hardware I/O, how do we do with reading it? You can give your _Resource_ a **spec** to tell the smart object of how to do it:  
+But if a _Resource_ is something that needs to be read from hardware I/O, how do we do with reading it? You can give your _Resource_ a **spec** object to tell the smart object of how to do it:  
 
 > A **spec** object, which can have _**read**_, _**write**_, or _**exec**_ method(s) in it, is where you can inject the specific operations to tell the smart object of how to access your _Resource_.  
   
@@ -181,6 +181,26 @@ so.init('temperature', 0, {
 });
 ```
   
+You can also take the `tempVal` as the inner state of the _Object Instance_:
+  
+```js
+so.init('temperature', 0, {
+    _state: {
+        tempVal: 26
+    },
+    sensorValue: {
+        read: function (cb) {
+            cb(null, this._state.tempVal);
+        },
+        write: function (val, cb) {
+            this._state.tempVal = val;
+            cb(null, this._state.tempVal);
+        }
+    },
+    units: 'cel'
+});
+```
+
 Next, let's take a look at something really cool - an _executable Resource_.  
 
   
@@ -203,12 +223,14 @@ var m = require('mraa');
 
 var so = new SmartObject({
     led: new m.Gpio(2),
-    blinkLed: function (t) {
-        var led = this.hal.led;
-        // logic of blinking an led
-    }.bind(so)
+    blinkLed: null  // we'll define this drive in the setup function
 }, function () {
     this.hal.led.dir(m.DIR_OUT);   // setup for gpio direction
+
+    this.hal.blinkLed = function (t) {
+        var led = this.hal.led;
+        // logic of blinking an led
+    };
 });
 
 so.init('myObject', 0, {

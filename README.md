@@ -19,13 +19,13 @@ A Smart Object Class that helps you with creating IPSO Smart Objects in your Jav
 <a name="Overview"></a>
 ## 1. Overview
 
-**smartobject** is a _Smart Object_ Class that helps you with creating [_IPSO_](http://www.ipso-alliance.org/) _Smart Objects_ in your JavaScript applications. If you like to use the IPSO data model in your projects or products, you can use **smartobject** as the base class to abstract your hardware, sensor modules, or gadgets into plugins (node.js packages) for users convenience. In addition, this module is isomorphic and you can use it at server-side to generate the smart objects.  
+**smartobject** is a _Smart Object_ Class that helps you with creating [_IPSO_](http://www.ipso-alliance.org/) _Smart Objects_ in your JavaScript applications. If you like to use the IPSO data model in your projects or products, you can use **smartobject** as the base class to abstract your hardware, sensor modules, or gadgets into plugins (node.js packages) for users convenience. In addition, this module is isomorphic and you can use it at server-side as well to generate the smart objects.  
   
 IPSO defines a hierarchical data model to describe real-world gadgets, such as temperature sensors and light controllers.  
 * IPSO uses _**Object**_ to tell what kind of a gadget is, and uses _**Object Instance**_ to tell which one a gadget is.  
 * An _**Object**_ is like a class or a boilerplate, and each kind of _Object_ has an unique _Object Id_ (`oid`) defined by IPSO, e.g., 3303 for the _Temperature Sensor Object_. Here is the [list of oids](https://github.com/simenkid/lwm2m-id#Identifiers).  
 * An _**Object Instance**_ is the entity of an _Object_. Each _**Object Instance**_ has an unique _**Object Instance Id**_ to identify itself from other gadgets of the same class. Simply speaking, `oid` is like a namespace to manage all the same kind of _IPSO Object Instances_.  
-* The _**Resources**_ are used to describe what attributes may a gadget have, for example, a temperature sensor may have attributes such as _sensorValue_, _unit_, _minMeaValue_, .etc. _**Resource Values**_  will be filled after instantiated. Here is the [list of rids](https://github.com/simenkid/lwm2m-id#ResrcIdentifiers).  
+* The _**Resources**_ are used to describe what attributes may a gadget have, for example, a temperature sensor may have attributes such as _sensorValue_, _unit_, _minMeaValue_, .etc. _**Resource Values**_  will be filled after instantiated. Here is the [list of templates](https://github.com/PeterEB/smartobject/blob/master/docs/templates.md) to show you what attributes may a gadget have.  
 
 ![ISPO Model](https://raw.githubusercontent.com/lwmqn/documents/master/media/ipso_model.png)
 
@@ -88,6 +88,7 @@ Here is a quick example to show you how to create your _Smart Object_ with only 
         // if dInState should be read from by certain operation
         dInState: {
             read: function (cb) {
+                var hal = this.parent.hal;  // see SmartObject constructor
                 hal.digitalPin0.read(function (err, val) {
                     cb(null, val);
                 });
@@ -130,9 +131,9 @@ Exposed by `require('smartobject')`.
 ### new SmartObject([hal][, setup])
 Create an instance of SmartObject class. This document will use `so` to indicate this kind of instance.  
 
-A `so` can hold many _IPSO Object Instances_ in it. The `so` itself has an accessible but un-enumerable boolean property `'ipsoOnly'` to tell if this `so` only accepts IPSO-defined `oid` and `rid`. Default value for `so.ipsoOnly` is `false`. You can set it to `true` in the `setup` function.  
+A `so` can hold many _IPSO Object Instances_ in it. The `so` itself has an accessible but un-enumerable boolean property `'ipsoOnly'` to define if this `so` only accepts IPSO-defined `oid` and `rid`. Default value for `so.ipsoOnly` is `false`. You can set it to `true` in the `setup` function.  
 
-If `so.ipsoOnly == true`, then the given `oid` must be an IPSO-defined Object Id, `iid` must be a number, and all Resource Ids within `resrcs` must be IPSO-defined Resource Ids, or `so.init()` will throw Errors.  
+If `so.ipsoOnly == true`, then the given `oid` must be an IPSO-defined Object Id, `iid` must be a number, and all keys within `resrcs` object must be IPSO-defined Resource Ids, or `so.init()` will throw Errors.  
 
 **Arguments:**  
 
@@ -145,7 +146,7 @@ If `so.ipsoOnly == true`, then the given `oid` must be an IPSO-defined Object Id
 
 **Examples:** 
 
-* A very simple case. There is no hardware with the smart object. For example, at server-side we only need the **data** of a smart object.  
+* A very simple case. There is no hardware with the smart object. For example, at server-side we only need the **data** of a smart object, thus we don't have the `hal`.  
 
 ```js
 var SmartObject = require('smartobject');
@@ -201,8 +202,8 @@ Create and initialize an _Object Instance_ in `so`, where `oid` is the [_IPSO Ob
 
 1. `oid` (_String_ | _Number_): _IPSO Object Id_, for example, `'temperature'` or `3303`. `so` will internally turn the id into its string version, say `'temperature'`, as the key if given with a numeric id.  
 2. `iid` (_String_ | _Number_): _Object Instance Id_. It would be nice to use numbers, i.e., `0`, `1`, `2` to strictly meet the IPSO definition. But strings are also accepted, e.g., `'sen01'`, `'sen02'`, `'sen03'`, it is just like a handle to help you distinguish different _Instances_ that share the same _Object_ class.  
-3. `resrcs` (_Object_): _IPSO Resources_, which is an object with **rid-value pairs** to describe the _Resources_. Each key in `resrcs` is a _Resource Id_ that can be a string or a number. And each value can be a primitive, an data object, or an object with specific methods, i.e. read(), write(), exec(). The [Resources Planning Tutorial](https://github.com/PeterEB/smartobject/blob/master/docs/resource_plan.md) will give you some hints. You can have your private information or inner states assigned to the `resrc._state` property, for example `resrc = { _state: { foo: 'bar' } }`.  
-4. `setup` (_Function_): Optional. A setup function allows you to set some things up, for example, setting some flags or states for inner use. In this function, `this` will be bound to the _Object Instance_ itself, thus you can use `this._state` to access your inner state. Further more, you can use `this.parent` to get the `so` which holds this _Object Instance_, and use `this.parent.hal` to access your hardware.  
+3. `resrcs` (_Object_): _IPSO Resources_, which is an object with **rid-value pairs** to describe the _Resources_. Each key in `resrcs` is a _Resource Id_ that can be a string or a number. And each value can be a primitive, an data object, or an object with specific methods, i.e. read(), write(), exec(). The [Resources Planning Tutorial](https://github.com/PeterEB/smartobject/blob/master/docs/resource_plan.md) will give you some hints. You can have your private information or inner states within an object assigned to the `resrc._state` property, for example `resrc = { _state: { foo: 'bar' } }`.  
+4. `setup` (_Function_): Optional. A setup function allows you to set some things up, for example, setting some flags or states for inner use. In this function, `this` will be bound to the _Object Instance_ itself, thus you can use `this._state` to access your inner state. Further more, you can use `this.parent` to get the `so` that owns this _Object Instance_, and use `this.parent.hal` to access your hardware.  
 
 **Returns:**  
 
@@ -267,13 +268,13 @@ var SmartObject = require('smartobject');
 
 var so = new SmartObject({
     led: new m.Gpio(44),
-    switch: new m.Gpio(45)
+    onOffSwitch: new m.Gpio(45)
 }, function () {
     var hal = this.hal;
 
     // hardware initialization
     hal.led.dir(m.DIR_OUT);
-    hal.switch.dir(m.DIR_IN);
+    hal.onOffSwitch.dir(m.DIR_IN);
 
     this.ipsoOnly = true;
 });
