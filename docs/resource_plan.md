@@ -26,7 +26,8 @@ Let's figure it out step by step:
     - Writable Resource
     - Readable and Writable Resource
     - Executable Resource
-
+  
+Please see our [wiki](https://github.com/PeterEB/smartobject/wiki) if you like some practical examples.
 
 <br />
 

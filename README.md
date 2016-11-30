@@ -19,7 +19,7 @@ A Smart Object Class that helps you with creating IPSO Smart Objects in your Jav
 <a name="Overview"></a>
 ## 1. Overview
 
-**smartobject** is a _Smart Object_ Class that helps you with creating [_IPSO_](http://www.ipso-alliance.org/) _Smart Objects_ in your JavaScript applications. If you like to use the IPSO data model in your projects or products, you can use **smartobject** as the base class to abstract your hardware, sensor modules, or gadgets into plugins (node.js packages) for users convenience. In addition, this module is isomorphic and you can use it at server-side as well to generate the smart objects.  
+**smartobject** is a _Smart Object_ Class that helps you with creating [_IPSO_](http://www.ipso-alliance.org/) _Smart Objects_ in your JavaScript applications. If you like to use the IPSO data model in your projects or products, you can use **smartobject** as the base class to abstract your hardware, sensor modules, or gadgets into plugins (node.js packages) for users convenience. Here is [an example of hardware abstraction with mraa](https://github.com/PeterEB/smartobject/wiki/Hardware-Abstraction-with-mraa) on Linkit Smart 7688 in our wiki. In addition, this module is isomorphic and you can use it at server-side as well to generate the smart objects.  
   
 IPSO defines a hierarchical data model to describe real-world gadgets, such as temperature sensors and light controllers.  
 * IPSO uses _**Object**_ to tell what kind of a gadget is, and uses _**Object Instance**_ to tell which one a gadget is.  
