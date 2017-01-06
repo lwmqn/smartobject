@@ -1,6 +1,6 @@
 {
   "name": "smartobject",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "A Smart Object Class that helps you with creating IPSO Smart Objects in your JavaScript applications",
   "main": "index.js",
   "scripts": {
@@ -21,8 +21,8 @@
   },
   "homepage": "https://github.com/PeterEB/smartobject",
   "dependencies": {
-    "busyman": "^0.2.1",
-    "lwm2m-id": "^1.5.0"
+    "busyman": "^0.3.0",
+    "lwm2m-id": "^1.6.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
