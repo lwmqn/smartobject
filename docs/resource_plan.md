@@ -19,7 +19,7 @@ But if a _Resource_ is something that needs to be read from hardware I/O, how do
 Let's figure it out step by step:  
 
 1. [_Resource Value_ is a primitive](#r_is_primitive)
-    - Let's take a temperatur sensor for exmaple
+    - Let's take a temperature sensor for example
     - Polling it, but how fast?
 2. [_Resource Value_ is a **spec** object](#r_is_spec)
     - Readable Resource
