@@ -16,7 +16,7 @@ A Smart Object Class that helps you with creating IPSO Smart Objects in your Jav
 5. [APIs](#APIs)  
 6. [Code Templates](https://github.com/PeterEB/smartobject/blob/master/docs/templates.md)  
 
-<a name="Overview"></a>
+<a name="Overview"></a>  
 ## 1. Overview
 
 **smartobject** is a _Smart Object_ Class that helps you with creating [_IPSO_](http://www.ipso-alliance.org/) _Smart Objects_ in your JavaScript applications. If you like to use the IPSO data model in your projects or products, you can use **smartobject** as the base class to abstract your hardware, sensor modules, or gadgets into plugins (node.js packages) for users convenience. Here is [an example of hardware abstraction with mraa](https://github.com/PeterEB/smartobject/wiki/Hardware-Abstraction-with-mraa) on Linkit Smart 7688 in our wiki. In addition, this module is isomorphic and you can use it at server-side as well to generate the smart objects.  
@@ -34,12 +34,12 @@ IPSO defines a hierarchical data model to describe real-world gadgets, such as t
 * The _italics_, such _Object_, _Object Id_, _Object Instance_, and _Object Instance Id_, are used to distinguish the _**IPSO Objects**_ from the JavaScript **objects**.  
   
 
-<a name="Installation"></a>
+<a name="Installation"></a>  
 ## 2. Installation
 
 > $ npm install smartobject --save
 
-<a name="Usage"></a>
+<a name="Usage"></a>  
 ## 3. Usage
 
 Here is a quick example to show you how to create your _Smart Object_ with only few steps:
@@ -97,7 +97,7 @@ Here is a quick example to show you how to create your _Smart Object_ with only 
     });
     ```
 
-<a name="Resources"></a>
+<a name="Resources"></a>  
 ## 4. Resources Planning
 
 The great benefit of using **smartobject** in your application is that you almost need not to tackle the allocation of _Resources_ by yourself. It provides a scheme to help you with management of reading/writing your hardware or executing a procedure on the machine. All you have to do is to plan and define your _Resources_ well, and then use **smartobject** methods to do your jobs. You can use **smartobject** to abstract your hardware, sensor modules, or gadgets into plugins (node.js packages).  
@@ -109,7 +109,7 @@ Imagine that you have to read the temperature value from a sensor with one-wire 
 
 Please refer to [Resources Planning Tutorial](https://github.com/PeterEB/smartobject/blob/master/docs/resource_plan.md) for more details. It will show you how to initialize your _Resources_ and how to abstract your hardware with _IPSO Resources_ as well. In addition, here are some [code templates](https://github.com/PeterEB/smartobject/blob/master/docs/templates.md) for your convenience to create smart objects.  
 
-<a name="APIs"></a>
+<a name="APIs"></a>  
 ## 5. APIs
 
 * [new SmartObject()](#API_smartobject)
