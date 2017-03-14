@@ -121,6 +121,39 @@ describe('Smart Object - Signature Check', function () {
         });
     });
 
+    describe('#.remove()', function () {
+        it('should be a function', function () {
+            expect(smartObj.remove).to.be.a('function');
+        });
+
+        it('should throw TypeError if oid is not a string or a number', function () {
+            expect(function () { return smartObj.remove(); }).to.throw(TypeError);
+            expect(function () { return smartObj.remove(undefined); }).to.throw(TypeError);
+            expect(function () { return smartObj.remove(null); }).to.throw(TypeError);
+            expect(function () { return smartObj.remove(NaN); }).to.throw(TypeError);
+            expect(function () { return smartObj.remove([]); }).to.throw(TypeError);
+            expect(function () { return smartObj.remove({}); }).to.throw(TypeError);
+            expect(function () { return smartObj.remove(true); }).to.throw(TypeError);
+            expect(function () { return smartObj.remove(new Date()); }).to.throw(TypeError);
+            expect(function () { return smartObj.remove(function () {}); }).to.throw(TypeError);
+        });
+
+        it('should throw TypeError if iid is not a string or a number', function () {
+            expect(function () { return smartObj.remove(3304); }).to.throw(TypeError);
+            expect(function () { return smartObj.remove(3304, undefined); }).to.throw(TypeError);
+            expect(function () { return smartObj.remove(3304, null); }).to.throw(TypeError);
+            expect(function () { return smartObj.remove(3304, NaN); }).to.throw(TypeError);
+            expect(function () { return smartObj.remove(3304, []); }).to.throw(TypeError);
+            expect(function () { return smartObj.remove(3304, {}); }).to.throw(TypeError);
+            expect(function () { return smartObj.remove(3304, true); }).to.throw(TypeError);
+            expect(function () { return smartObj.remove(3304, new Date()); }).to.throw(TypeError);
+            expect(function () { return smartObj.remove(3304, function () {}); }).to.throw(TypeError);
+
+            expect(function () { return smartObj.remove(3304, 2); }).not.to.throw(TypeError);
+            expect(function () { return smartObj.remove(3304, 'b'); }).not.to.throw(TypeError);
+        });
+    });
+
     describe('#.objectList()', function () {
         it('should be a function', function () {
             expect(smartObj.objectList).to.be.a('function');

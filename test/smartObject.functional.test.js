@@ -29,6 +29,19 @@ describe('Smart Object - Functional Check', function () {
             expect(typeof smartObj.temperature[0].sensorValue.read).to.be.eql('function');
             expect(smartObj.temperature[0].sensorValue._isCb).to.be.true;
         });
+
+        it('should add a Multi-Resource', function () {
+            smartObj.init('multiResource', 0, {
+                5700: {
+                    0: 'x',
+                    1: 'y',
+                    2: 'z'
+                }
+            });
+
+            expect(smartObj.multiResource[0][5700][0]).to.be.eql('x');
+            expect(smartObj.multiResource[0][5700]._isCb).to.be.false;
+        });
     });
 
     describe('#.create()', function () {
@@ -39,9 +52,22 @@ describe('Smart Object - Functional Check', function () {
         });
     });
 
+    describe('#.remove()', function () {
+        it('should remove an Object Instance', function () {
+            smartObj.init(3303, 2, { 
+                5700: 20
+            });
+            expect(smartObj.temperature[2].sensorValue).to.be.eql(20);
+
+            smartObj.remove(3303, 2);
+            expect(smartObj.temperature[2]).to.be.eql(undefined);
+            expect(smartObj.findObjectInstance(3303, 2)).to.be.eql(undefined);
+        });
+    });
+    
     describe('#.objectList()', function () {
         it('should return objectList', function () {
-            expect(smartObj.objectList()).to.be.eql([{ oid: 3303, iid: [ 0, 1 ]}]);
+            expect(smartObj.objectList()).to.be.eql([{ oid: 3303, iid: [ 0, 1 ]}, { oid: 'multiResource', iid: [0] }]);
         });
     });
 
@@ -128,6 +154,15 @@ describe('Smart Object - Functional Check', function () {
                     1: {
                         units: 'f'
                     }
+                },
+                multiResource: {
+                    0: {
+                        5700: {
+                            0: 'x',
+                            1: 'y',
+                            2: 'z'
+                        }
+                    }
                 }
             };
 
@@ -173,6 +208,15 @@ describe('Smart Object - Functional Check', function () {
                     },
                     1: {
                         units: 'f'
+                    }
+                },
+                multiResource: {
+                    0: {
+                        5700: {
+                            0: 'x',
+                            1: 'y',
+                            2: 'z'
+                        }
                     }
                 }
             };
@@ -377,6 +421,19 @@ describe('Smart Object - Functional Check', function () {
                     done();
             });
         });
+
+        it('should pass the read value when Resources is a Multi-Resource', function (done) {
+            var obj = {
+                0: 'x',
+                1: 'y',
+                2: 'z'
+            };
+
+            smartObj.read('multiResource', 0, 5700, function (err, result) {
+                if (_.isEqual(result, obj)) 
+                    done();
+            });
+        });
     });
 
     describe('#.write()', function () {
@@ -449,8 +506,21 @@ describe('Smart Object - Functional Check', function () {
                     done();
             });
         });
-    });
 
+        it('should write Resource and pass the write value when Resources is a Multi-Resource', function (done) {
+            var obj = {
+                0: 'a', 
+                1: 'b', 
+                2: 'c'
+            };
+
+            smartObj.write('multiResource', 0, 5700, obj, function (err, result) {
+                if (_.isEqual(result, obj))
+                    done();
+            });
+        });
+    });
+    
     describe('#.exec()', function () {
         it('should exec Resource and pass true through its second argument', function (done) {
             smartObj.exec(3303, 0, 5704, [ 20 ], function (err, result) {
