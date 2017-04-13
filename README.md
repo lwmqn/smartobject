@@ -113,7 +113,7 @@ Please refer to [Resources Planning Tutorial](https://github.com/PeterEB/smartob
 ## 5. APIs
 
 * [new SmartObject()](#API_smartobject)
-* [init()](#API_init)
+* [init()](#API_init), [remove()](#API_remove)
 * [objectList()](#API_objectList)
 * [has()](#API_has), [get()](#API_get), [set()](#API_set)
 * [read()](#API_read), [write()](#API_write), [exec()](#API_exec)
@@ -304,6 +304,26 @@ so.init('lightCtrl', 0 , {
         }
     }
 });
+```
+
+*************************************************
+<a name="API_remove"></a>
+### remove(oid, iid)
+Remove an _Object Instance_ in `so`, where `oid` is the [_IPSO Object Id_](https://github.com/simenkid/lwm2m-id#Identifiers) to indicate what kind of your gadget is, `iid` is the _Object Instance Id_.
+
+**Arguments:**  
+
+1. `oid` (_String_ | _Number_): _IPSO Object Id_, for example, `'temperature'` or `3303`. `so` will internally turn the id into its string version, say `'temperature'`, as the key if given with a numeric id.  
+2. `iid` (_String_ | _Number_): _Object Instance Id_. It would be nice to use numbers, i.e., `0`, `1`, `2` to strictly meet the IPSO definition. But strings are also accepted, e.g., `'sen01'`, `'sen02'`, `'sen03'`, it is just like a handle to help you distinguish different _Instances_ that share the same _Object_ class.  
+
+**Returns:**  
+
+* (_Boolean_): Returns `true` if remove successfully, else returns `false` if the _Object Instance_ does not exist.  
+
+**Examples:** 
+
+```js
+so.remove('temperature', 0)
 ```
 
 *************************************************
