@@ -3,7 +3,7 @@ A Smart Object Class that helps you with creating IPSO Smart Objects in your Jav
 
 [![NPM](https://nodei.co/npm/smartobject.png?downloads=true)](https://nodei.co/npm/smartobject/)  
 
-[![Travis branch](https://img.shields.io/travis/PeterEB/smartobject/master.svg?maxAge=2592000)](https://travis-ci.org/PeterEB/smartobject)
+[![Travis branch](https://img.shields.io/travis/PeterEB/smartobject/master.svg?maxAge=2592000)](https://travis-ci.org/AllSmartObjects/smartobject)
 [![npm](https://img.shields.io/npm/v/smartobject.svg?maxAge=2592000)](https://www.npmjs.com/package/smartobject)
 [![npm](https://img.shields.io/npm/l/smartobject.svg?maxAge=2592000)](https://www.npmjs.com/package/smartobject)
 
@@ -14,18 +14,18 @@ A Smart Object Class that helps you with creating IPSO Smart Objects in your Jav
 3. [Usage](#Usage)  
 4. [Resources Planning](#Resources)  
 5. [APIs](#APIs)  
-6. [Code Templates](https://github.com/PeterEB/smartobject/blob/master/docs/templates.md)  
+6. [Code Templates](https://github.com/AllSmartObjects/smartobject/blob/master/docs/templates.md)  
 
 <a name="Overview"></a>  
 ## 1. Overview
 
-**smartobject** is a _Smart Object_ Class that helps you with creating [_IPSO_](http://www.ipso-alliance.org/) _Smart Objects_ in your JavaScript applications. If you like to use the IPSO data model in your projects or products, you can use **smartobject** as the base class to abstract your hardware, sensor modules, or gadgets into plugins (node.js packages) for users convenience. Here is [an example of hardware abstraction with mraa](https://github.com/PeterEB/smartobject/wiki/Hardware-Abstraction-with-mraa) on Linkit Smart 7688 in our wiki. In addition, this module is isomorphic and you can use it at server-side as well to generate the smart objects.  
+**smartobject** is a _Smart Object_ Class that helps you with creating [_IPSO_](http://www.ipso-alliance.org/) _Smart Objects_ in your JavaScript applications. If you like to use the IPSO data model in your projects or products, you can use **smartobject** as the base class to abstract your hardware, sensor modules, or gadgets into plugins (node.js packages) for users convenience. Here is [an example of hardware abstraction with mraa](https://github.com/AllSmartObjects/smartobject/wiki/Hardware-Abstraction-with-mraa) on Linkit Smart 7688 in our wiki. In addition, this module is isomorphic and you can use it at server-side as well to generate the smart objects.  
   
 IPSO defines a hierarchical data model to describe real-world gadgets, such as temperature sensors and light controllers.  
 * IPSO uses _**Object**_ to tell what kind of a gadget is, and uses _**Object Instance**_ to tell which one a gadget is.  
 * An _**Object**_ is like a class or a boilerplate, and each kind of _Object_ has an unique _Object Id_ (`oid`) defined by IPSO, e.g., 3303 for the _Temperature Sensor Object_. Here is the [list of oids](https://github.com/simenkid/lwm2m-id#Identifiers).  
 * An _**Object Instance**_ is the entity of an _Object_. Each _**Object Instance**_ has an unique _**Object Instance Id**_ to identify itself from other gadgets of the same class. Simply speaking, `oid` is like a namespace to manage all the same kind of _IPSO Object Instances_.  
-* The _**Resources**_ are used to describe what attributes may a gadget have, for example, a temperature sensor may have attributes such as _sensorValue_, _unit_, _minMeaValue_, .etc. _**Resource Values**_  will be filled after instantiated. Here is the [list of templates](https://github.com/PeterEB/smartobject/blob/master/docs/templates.md) to show you what attributes may a gadget have.  
+* The _**Resources**_ are used to describe what attributes may a gadget have, for example, a temperature sensor may have attributes such as _sensorValue_, _unit_, _minMeaValue_, .etc. _**Resource Values**_  will be filled after instantiated. Here is the [list of templates](https://github.com/AllSmartObjects/smartobject/blob/master/docs/templates.md) to show you what attributes may a gadget have.  
 
 ![ISPO Model](https://raw.githubusercontent.com/lwmqn/documents/master/media/ipso_model.png)
 
@@ -50,7 +50,7 @@ Here is a quick example to show you how to create your _Smart Object_ with only 
     var so = new SmartObject(); // so can hold many Object Instances in it
     ```
 
-* **Step 2**: Initialize a temperature sensor in your smart object `so`  (ref: [code templates](https://github.com/PeterEB/smartobject/blob/master/docs/templates.md))
+* **Step 2**: Initialize a temperature sensor in your smart object `so`  (ref: [code templates](https://github.com/AllSmartObjects/smartobject/blob/master/docs/templates.md))
     ```js
     so.init(
         'temperature',          // 'temperature' is the IPSO-defined Object Identifier (oid, 3303).
@@ -107,7 +107,7 @@ Imagine that you have to read the temperature value from a sensor with one-wire 
 * How do you read the temperature value from your smart object?
 * How do you do with the access control? Your _Resource_ is readable? writable? or remotely executable?  
 
-Please refer to [Resources Planning Tutorial](https://github.com/PeterEB/smartobject/blob/master/docs/resource_plan.md) for more details. It will show you how to initialize your _Resources_ and how to abstract your hardware with _IPSO Resources_ as well. In addition, here are some [code templates](https://github.com/PeterEB/smartobject/blob/master/docs/templates.md) for your convenience to create smart objects.  
+Please refer to [Resources Planning Tutorial](https://github.com/AllSmartObjects/smartobject/blob/master/docs/resource_plan.md) for more details. It will show you how to initialize your _Resources_ and how to abstract your hardware with _IPSO Resources_ as well. In addition, here are some [code templates](https://github.com/AllSmartObjects/smartobject/blob/master/docs/templates.md) for your convenience to create smart objects.  
 
 <a name="APIs"></a>  
 ## 5. APIs
@@ -202,7 +202,7 @@ Create and initialize an _Object Instance_ in `so`, where `oid` is the [_IPSO Ob
 
 1. `oid` (_String_ | _Number_): _IPSO Object Id_, for example, `'temperature'` or `3303`. `so` will internally turn the id into its string version, say `'temperature'`, as the key if given with a numeric id.  
 2. `iid` (_String_ | _Number_): _Object Instance Id_. It would be nice to use numbers, i.e., `0`, `1`, `2` to strictly meet the IPSO definition. But strings are also accepted, e.g., `'sen01'`, `'sen02'`, `'sen03'`, it is just like a handle to help you distinguish different _Instances_ that share the same _Object_ class.  
-3. `resrcs` (_Object_): _IPSO Resources_, which is an object with **rid-value pairs** to describe the _Resources_. Each key in `resrcs` is a _Resource Id_ that can be a string or a number. And each value can be a primitive, an data object, or an object with specific methods, i.e. read(), write(), exec(). The [Resources Planning Tutorial](https://github.com/PeterEB/smartobject/blob/master/docs/resource_plan.md) will give you some hints. You can have your private information or inner states within an object assigned to the `resrc._state` property, for example `resrc = { _state: { foo: 'bar' } }`.  
+3. `resrcs` (_Object_): _IPSO Resources_, which is an object with **rid-value pairs** to describe the _Resources_. Each key in `resrcs` is a _Resource Id_ that can be a string or a number. And each value can be a primitive, an data object, or an object with specific methods, i.e. read(), write(), exec(). The [Resources Planning Tutorial](https://github.com/AllSmartObjects/smartobject/blob/master/docs/resource_plan.md) will give you some hints. You can have your private information or inner states within an object assigned to the `resrc._state` property, for example `resrc = { _state: { foo: 'bar' } }`.  
 4. `setup` (_Function_): Optional. A setup function allows you to set some things up, for example, setting some flags or states for inner use. In this function, `this` will be bound to the _Object Instance_ itself, thus you can use `this._state` to access your inner state. Further more, you can use `this.parent` to get the `so` that owns this _Object Instance_, and use `this.parent.hal` to access your hardware.  
 
 **Returns:**  
