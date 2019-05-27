@@ -669,7 +669,7 @@ so.exec('foo_object', 0, 'show', [], function (err, data) {
 
 *************************************************
 <a name="API_dump"></a>
-### dump([oid[, iid][, opt],] callback)
+### dump([oid[, iid]][, opt], callback)
 Asynchronously dump data from `so`. This method uses the asynchronous `read()` under the hood.  
 
 * Given with `oid`, `iid`, and a `callback` to dump data of an _Object Instance_.  
@@ -686,8 +686,8 @@ Asynchronously dump data from `so`. This method uses the asynchronous `read()` u
 
 1. `oid` (_String_ | _Number_): _Object Id_ of the target.  
 2. `iid` (_String_ | _Number_): _Object Instance Id_ of the target.  
-3. `callback` (_Function_): `function (err, data) { }`.  
-4. `opt` (_Object_): An option used to dump _Resources_ in restrict mode. Default is `{ restrict: false }` if not given.  
+3. `opt` (_Object_): An option used to dump _Resources_ in restrict mode. Default is `{ restrict: false }` if not given. 
+4. `callback` (_Function_): `function (err, data) { }`.   
 
 **Returns:**  
 
