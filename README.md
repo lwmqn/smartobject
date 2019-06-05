@@ -5,7 +5,7 @@ A Smart Object Class that helps you with creating IPSO Smart Objects in your Jav
 
 [![Travis branch](https://img.shields.io/travis/PeterEB/smartobject/master.svg?maxAge=2592000)](https://travis-ci.org/AllSmartObjects/smartobject)
 [![npm](https://img.shields.io/npm/v/smartobject.svg?maxAge=2592000)](https://www.npmjs.com/package/smartobject)
-[![npm](https://img.shields.io/npm/l/smartobject.svg?maxAge=2592000)](https://www.npmjs.com/package/smartobject)
+[![npm](https://img.shields.io/npm/l/smartobject.svg?maxAge=2592000)](https://www.npmjs.com/package/smartobject) [![Greenkeeper badge](https://badges.greenkeeper.io/AllSmartObjects/smartobject.svg)](https://greenkeeper.io/)
 
 ## Table of Contents
 
