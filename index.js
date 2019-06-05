@@ -1,3 +1,2 @@
-'use strict';
 
-module.exports = require('./lib/smartobject.js');
+module.exports = require('./lib/smartobject.js')
