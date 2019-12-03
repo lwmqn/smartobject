@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/AllSmartObjects/smartobject.git"
+    "url": "https://github.com/lwmqn/smartobject.git"
   },
   "keywords": [
     "ipso",
@@ -20,9 +20,9 @@
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/AllSmartObjects/smartobject/issues"
+    "url": "https://github.com/lwmqn/smartobject/issues"
   },
-  "homepage": "https://github.com/AllSmartObjects/smartobject",
+  "homepage": "https://github.com/lwmqn/smartobject",
   "dependencies": {
     "busyman": "^0.3.0",
     "lwm2m-id": "^1.6.2"
