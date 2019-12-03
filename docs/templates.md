@@ -1,10 +1,10 @@
 ## Code Templates
 
-This document provides many templates of IPSO-defined devices [(Smart Objects starter pack 1.0)](http://www.ipso-alliance.org/smart-object-guidelines/) for your reference in defining gadgets with **smartobject**.  
-* Each template gives a code snippet of how to initialize an _Object Instance_ with its `oid` and `iid`, and lists every _Resource_ the _Object Instance_ **may** have.  
-* In a code snippet, commented lines are optional _Resources_. You are free to uncomment and define those optional _Resources_ you like to use within an _Object Instance_.  
-* A phrase `< rid number, access, data type { range or enum }, unit >` tells the numeric id, access permission, and data type of a _Resource_ defined by IPSO.  
-* Just copy and paste the snippets, then make some changes to fit your needs.  
+This document provides many templates of IPSO-defined devices [(Smart Objects starter pack 1.0)](http://www.ipso-alliance.org/smart-object-guidelines/) for your reference in defining gadgets with **smartobject**.
+* Each template gives a code snippet of how to initialize an _Object Instance_ with its `oid` and `iid`, and lists every _Resource_ the _Object Instance_ **may** have.
+* In a code snippet, commented lines are optional _Resources_. You are free to uncomment and define those optional _Resources_ you like to use within an _Object Instance_.
+* A phrase `< rid number, access, data type { range or enum }, unit >` tells the numeric id, access permission, and data type of a _Resource_ defined by IPSO.
+* Just copy and paste the snippets, then make some changes to fit your needs.
 
 ### Catalog of _Objects_
 
@@ -30,7 +30,7 @@ This document provides many templates of IPSO-defined devices [(Smart Objects st
 ********************************************
 <a name="tmpl_digitalInput"></a>
 ### 3200 Digital Input
-  
+
 ```js
 // Digital Input (oid = 3200 or 'dIn')
 so.init('dIn', 0, {
@@ -46,11 +46,11 @@ so.init('dIn', 0, {
     // sensorType:                  // < rid = 5751,  R, String >
 });
 ```
-  
+
 ********************************************
 <a name="tmpl_digitalOutput"></a>
 ### 3201 Digital Output
-  
+
 ```js
 // Digital Output (oid = 3201 or 'dOut')
 so.init('dOut', 0, {
@@ -62,11 +62,11 @@ so.init('dOut', 0, {
     // appType:                     // < rid = 5750, RW, String >
 });
 ```
-  
+
 ********************************************
 <a name="tmpl_analogInput"></a>
 ### 3202 Analog Input
-  
+
 ```js
 // Analog Input (oid = 3202 or 'aIn')
 so.init('aIn', 0, {
@@ -82,11 +82,11 @@ so.init('aIn', 0, {
     // sensorType:                  // < rid = 5751,  R, String >
 });
 ```
-  
+
 ********************************************
 <a name="tmpl_analogOutput"></a>
 ### 3203 Analog Output
-  
+
 ```js
 // Analog Output (oid = 3203 or 'aOut')
 so.init('aOut', 0, {
@@ -99,11 +99,11 @@ so.init('aOut', 0, {
     // appType:                     // < rid = 5750, RW, String >
 });
 ```
-  
+
 ********************************************
 <a name="tmpl_genericSensor"></a>
 ### 3300 Generic Sensor
-  
+
 ```js
 // Generic Sensor (oid = 3300 or 'generic')
 so.init('generic', 0, {
@@ -120,11 +120,11 @@ so.init('generic', 0, {
     // sensorType:                  // < rid = 5751,  R, String >
 });
 ```
-  
+
 ********************************************
 <a name="tmpl_illumSensor"></a>
 ### 3301 Illuminance Sensor
-  
+
 ```js
 // Illuminance Sensor (oid = 3301 or 'illuminance')
 so.init('illuminance', 0, {
@@ -139,11 +139,11 @@ so.init('illuminance', 0, {
     // resetMinMaxMeaValues:        // < rid = 5605, E, Opaque >
 });
 ```
-  
+
 ********************************************
 <a name="tmpl_presenceSensor"></a>
 ### 3302 Presence Sensor
-  
+
 ```js
 // Presence Sensor (oid = 3302 or 'presence')
 so.init('presence', 0, {
@@ -157,11 +157,11 @@ so.init('presence', 0, {
     // clearToBusyDelay:            // < rid = 5904  RW, Integer, ms >
 });
 ```
-  
+
 ********************************************
 <a name="tmpl_temperature"></a>
 ### 3303 Temperature Sensor
-  
+
 ```js
 // Temperature Sensor (oid = 3303 or 'temperature')
 so.init('temperature', 0, {
@@ -176,11 +176,11 @@ so.init('temperature', 0, {
     // resetMinMaxMeaValues:        // < rid = 5605, E, Opaque >
 });
 ```
-  
+
 ********************************************
 <a name="tmpl_humidity"></a>
 ### 3304 Humidity Sensor
-  
+
 ```js
 // Humidity Sensor (oid = 3304 or 'humidity')
 so.init('humidity', 0, {
@@ -195,11 +195,11 @@ so.init('humidity', 0, {
     // resetMinMaxMeaValues:        // < rid = 5605, E, Opaque >
 });
 ```
-  
+
 ********************************************
 <a name="tmpl_pwrMea"></a>
 ### 3305 Power Measurement
-  
+
 ```js
 // Power Measurement (oid = 3305 or 'pwrMea')
 so.init('pwrMea', 0, {
@@ -225,11 +225,11 @@ so.init('pwrMea', 0, {
     // resetCumulEnergy: ,          // < rid = 5822,  E, Opaque >
 });
 ```
-  
+
 ********************************************
 <a name="tmpl_actuation"></a>
 ### 3306 Actuation
-  
+
 ```js
 // Actuation (oid = 3306 or 'actuation')
 so.init('actuation', 0, {
@@ -243,11 +243,11 @@ so.init('actuation', 0, {
     // appType:                     // < rid = 5750, RW, String >
 });
 ```
-  
+
 ********************************************
 <a name="tmpl_setPoint"></a>
 ### 3308 Set Point
-  
+
 ```js
 // Set Point (oid = 3308 or 'setPoint')
 so.init('setPoint', 0, {
@@ -260,11 +260,11 @@ so.init('setPoint', 0, {
     // appType:                     // < rid = 5750, RW, String >
 });
 ```
-  
+
 ********************************************
 <a name="tmpl_loadCtrl"></a>
 ### 3310 Load Control
-  
+
 ```js
 // Load Control (oid = 3310 or 'loadCtrl')
 so.init('loadCtrl', 0, {
@@ -285,11 +285,11 @@ so.init('loadCtrl', 0, {
     // dutyCycle:                   // < rid = 5828, RW, Interger { 0 ~ 100 }, % >
 });
 ```
-  
+
 ********************************************
 <a name="tmpl_lightCtrl"></a>
 ### 3311 Light Control
-  
+
 ```js
 // Light Control (oid = 3311 or 'lightCtrl')
 so.init('lightCtrl', 0, {
@@ -305,11 +305,11 @@ so.init('lightCtrl', 0, {
     // pwrFactor:                   // < rid = 5820,  R, Float >
 });
 ```
-  
+
 ********************************************
 <a name="tmpl_pwrCtrl"></a>
 ### 3312 Power Control
-  
+
 ```js
 // Power Control (oid = 3312 or 'pwrCtrl')
 so.init('pwrCtrl', 0, {
@@ -323,7 +323,7 @@ so.init('pwrCtrl', 0, {
     // pwrFactor:                   // < rid = 5820,  R, Float >
 });
 ```
-  
+
 ********************************************
 <a name="tmpl_accelerometer"></a>
 ### 3313 Accelerometer
@@ -341,11 +341,11 @@ so.init('accelerometer', 0, {
     // maxRangeValue:               // < rid = 5604, R, Float >
 });
 ```
-  
+
 ********************************************
 <a name="tmpl_magnetometer"></a>
 ### 3314 Magnetometer
-  
+
 ```js
 // Magnetometer (oid = 3314 or 'magnetometer')
 so.init('magnetometer', 0, {
@@ -358,11 +358,11 @@ so.init('magnetometer', 0, {
     // compassDir:                  // < rid = 5705, R, Float { 0 ~ 360 }, deg >
 });
 ```
-  
+
 ********************************************
 <a name="tmpl_barometer"></a>
 ### 3315 Barometer
-  
+
 ```js
 // Barometer (oid = 3315 or 'barometer')
 so.init('barometer', 0, {
@@ -381,7 +381,7 @@ so.init('barometer', 0, {
 ********************************************
 <a name="tmpl_common"></a>
 ### 3316 Voltage, 3317 Current, 3318 Frequency, 3319 Depth, 3320 Percentage, 3321 Altitude, 3322 Load, 3323 Pressure, 3324 Loudness, 3325 Concentration, 3326 Acidity, 3327 Conductivity, 3328 Power, 3329 Power Factor, 3330 Distance
-  
+
 ```js
 // 'xxx' Can be 'voltage', 'current', 'frequency', ..., and 'distance'
 so.init('xxx', 0, {
@@ -402,13 +402,13 @@ so.init('xxx', 0, {
 ********************************************
 <a name="tmpl_energy"></a>
 ### 3331 Energy
-  
+
 ```js
 // Energy (oid = 3331 or 'energy')
 so.init('energy', 0, {
     cumulActivePwr: {               // < rid = 5700,  R, Float >
         read: function (cb) {}
-    }, 
+    },
     // units: ,                     // < rid = 5701,  R, String >
     // resetCumulEnergy: ,          // < rid = 5605,  E, Opaque >
     // appType:                     // < rid = 5750, RW, String >
@@ -418,7 +418,7 @@ so.init('energy', 0, {
 ********************************************
 <a name="tmpl_direction"></a>
 ### 3332 Direction
-  
+
 ```js
 // Direction (oid = 3332 or 'direction')
 so.init('direction', 0, {
@@ -436,7 +436,7 @@ so.init('direction', 0, {
 ********************************************
 <a name="tmpl_time"></a>
 ### 3333 Time
-  
+
 ```js
 // Time (oid = 3333 or 'time')
 so.init('time', 0, {
@@ -452,7 +452,7 @@ so.init('time', 0, {
 ********************************************
 <a name="tmpl_gyrometer"></a>
 ### 3334 Gyrometer
-  
+
 ```js
 // Gyrometer (oid = 3334 or 'gyrometer')
 so.init('gyrometer', 0, {
@@ -464,7 +464,7 @@ so.init('gyrometer', 0, {
     // units: ,                     // < rid = 5701,  R, String >
     // minRangeValue: ,             // < rid = 5603,  R, Float >
     // maxRangeValue: ,             // < rid = 5604,  R, Float >
- 
+
     // minXValue: ,                 // < rid = 5508,  R, Float >
     // maxXValue: ,                 // < rid = 5609,  R, Float >
     // minYValue: ,                 // < rid = 5510,  R, Float >
@@ -479,7 +479,7 @@ so.init('gyrometer', 0, {
 ********************************************
 <a name="tmpl_colour"></a>
 ### 3335 Colour
-  
+
 ```js
 // Colour (oid = 3335 or 'colour')
 so.init('colour', 0, {
@@ -495,7 +495,7 @@ so.init('colour', 0, {
 ********************************************
 <a name="tmpl_gpsLocation"></a>
 ### 3336 GPS Location
-  
+
 ```js
 // GPS Location (oid = 3336 or 'gpsLocation')
 so.init('gpsLocation', 0, {
