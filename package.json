@@ -1,5 +1,5 @@
 {
-  "name": "smartobject",
+  "name": "@lwmqn/smartobject",
   "version": "1.5.3",
   "description": "A Smart Object Class that helps you with creating IPSO Smart Objects in your JavaScript applications",
   "main": "index.js",
